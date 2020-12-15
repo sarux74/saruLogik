@@ -1,0 +1,19 @@
+<div *ngIf="combinationView">
+  <div>
+    <table>
+      <thead>
+      <tr>
+        <th *ngFor="let blockId of combinationView.blockIds">{{blockId}}</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let in1 of counter(combinationView.truths.length); let i1 = index">
+        <td *ngFor="let in2 of counter(combinationView.truths[i1].length); let i2 = index">
+          <mat-checkbox [(ngModel)]="combinationView.truths[i1][i2]" [indeterminate]="false"></mat-checkbox>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

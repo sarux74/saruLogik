@@ -1,0 +1,30 @@
+<div style="position:sticky; top:0px;right:10px;left:10px;width=100%;background-color:white">
+  <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">
+    <div fxLayout="row" fxLayoutAlign="space-around">
+      <div fxFlex="2">
+        <div (click)="loadView(-1)"><b>Zeile</b></div>
+
+      </div>
+      <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+        <div (click)="loadView(i)"><b>{{groups[i].name}}</b></div>
+      </div>
+    </div>
+    <div>
+      <hr/>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="lines && groups" style="padding-top: 10px;">
+  <div *ngFor="let line of lines">
+    <div fxLayout="row" fxLayoutAlign="space-around">
+      <div fxFlex="2">
+        <div *ngIf="line.type === 'LINE' || line.type === 'SUBLINE'">{{line.lineId}}</div>
+      </div>
+      <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+        <div>{{printViewValue(line, i)}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+

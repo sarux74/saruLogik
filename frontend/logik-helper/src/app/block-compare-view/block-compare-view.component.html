@@ -1,0 +1,107 @@
+<div style="position:sticky; top:0px;right:10px;left:10px;width=100%;background-color:white">
+  <div *ngIf="blocks" fxLayout="column" fxLayoutAlign="space-between">
+    <div fxLayout="row" fxLayoutAlign="space-around">
+      <div fxFlex="20">Linker Block:</div>
+      <div fxFlex="30">
+        <mat-form-field>
+          <mat-label>Block</mat-label>
+          <mat-select [(ngModel)]="block1Id" (selectionChange)="updateBlockCompareView(1)">
+
+            <mat-option *ngFor="let block of blocks1" [value]="block.id">{{block.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div fxFlex="20">Rechter Block:</div>
+      <div fxFlex="30">
+        <mat-form-field>
+          <mat-label>Block</mat-label>
+          <mat-select [(ngModel)]="block2Id" (selectionChange)="updateBlockCompareView(2)">
+
+            <mat-option *ngFor="let block of blocks2" [value]="block.id">{{block.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="block1LineIds && block2LineIds && groups">
+  <div>
+    <table>
+      <thead>
+      <tr>
+        <th></th>
+        <th *ngFor="let block1Id of block1LineIds">{{block1Id}}</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let in1 of counter(block1LineIds.length); let i1 = index">
+        <td>{{block2LineIds[i1]}}</td>
+        <td *ngFor="let in2 of counter(block2LineIds.length); let i2 = index">
+          <mat-checkbox [(ngModel)]="proposed[i1][i2]" [indeterminate]="false"></mat-checkbox>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div *ngIf="groups" fxLayout="column" fxLayoutAlign="space-between">
+  <div fxLayout="row" fxLayoutAlign="space-around">
+    <div fxFlex="2">
+    </div>
+    <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+      <div><b>{{groups[i].name}}</b></div>
+    </div>
+  </div>
+  <div>
+    <hr/>
+  </div>
+</div>
+
+<div *ngIf="lines && groups" style="padding-top: 10px;">
+  <div *ngFor="let line of lines">
+    <div [ngSwitch]="line.type">
+      <div *ngSwitchCase="'MAIN_SEPARATOR'">
+        <hr/>
+      </div>
+      <div *ngSwitchCase="'BLOCK'" fxLayout="row" fxLayoutAlign="space-around">
+        <div fxFlex="2">
+        </div>
+        <div fxFlex="4">
+        </div>
+        <div fxFlex="94">
+          <div><b>{{printViewValue(line, 0)}}</b></div>
+        </div>
+      </div>
+
+      <div *ngSwitchDefault fxLayout="row" fxLayoutAlign="space-around">
+        <div fxFlex="2">
+
+        </div>
+        <div fxFlex="2">
+          <mat-checkbox *ngIf="isValueLine(line)" [checked]="selectedLine1 == line || selectedLine2 == line"
+                        (change)="selectLine($event, line)"></mat-checkbox>
+        </div>
+        <div fxFlex="2">
+          <div *ngIf="line.type === 'LINE'">{{line.lineId}}</div>
+        </div>
+        <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+          <div>{{printViewValue(line, i)}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-around">
+    <div fxFlex="6">&nbsp;
+    </div>
+    <div fxFlex="94">
+      <button [disabled]="!selectedLine1 || !selectedLine2" mat-icon-button color="secondary" aria-label="Verbinden"
+              (click)="merge()">
+        <mat-icon>playlist_add</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

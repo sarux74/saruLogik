@@ -1,0 +1,102 @@
+<div fxLayout="column wrap" fxLayoutAlign="space-between">
+
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <mat-form-field>
+      <mat-label>Gruppenname</mat-label>
+      <input matInput [(ngModel)]="data.newGroup.name"/>
+    </mat-form-field>
+  </div>
+  <br>
+
+  <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+    <div *cdkVirtualFor="let element of data.newGroup.elements" class="example-item">
+      <div fxLayout="row">
+        <div fxFlex="40">
+          <mat-form-field [style.width.px]="50">
+            <mat-label> Option {{element.index + 1}}:
+            </mat-label>
+            <input matInput [(ngModel)]="element.shortName"/>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="60">
+          <mat-form-field>
+            <input matInput [(ngModel)]="element.name"/>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+  <div fxLayout="row" fxLayoutAlign="space-between"><br/>
+    <div fxFlex="40">
+      <mat-checkbox [(ngModel)]="sortAfterSave">Sortieren?</mat-checkbox>
+    </div>
+    <div fxFlex="10">
+      <button mat-icon-button (click)="newElement(data.newGroup.index)"><i class="material-icons">add</i></button>
+    </div>
+    <div fxFlex="30">
+      <mat-form-field [style.width.px]="50">
+        <input matInput [(ngModel)]="addSize"/>
+      </mat-form-field>
+    </div>
+    <div fxFlex="10">
+      <button mat-icon-button (click)="removeLastElement()"><i class="material-icons">remove</i></button>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <div fxFlex="100">
+      <hr/>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-between"><br/>
+    <div fxFlex="30">Kopieren von</div>
+    <div fxFlex="60">
+      <mat-form-field>
+        <mat-label>Gruppe</mat-label>
+        <mat-select [(ngModel)]="copyGroupId">
+
+          <mat-option *ngFor="let group of data.groups" [value]="group.index">{{group.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="10">
+      <button mat-icon-button (click)="copyGroup()"><i class="material-icons">add</i></button>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <div fxFlex="100">
+      <hr/>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-between"><br/>
+    <div fxFlex="10">Serie</div>
+    <div fxFlex="20">
+      <mat-form-field [style.width.px]="50">
+        <mat-label>Von</mat-label>
+        <input matInput [(ngModel)]="seriesFrom">
+      </mat-form-field>
+    </div>
+    <div fxFlex="20">
+      <mat-form-field [style.width.px]="50">
+        <mat-label>Bis</mat-label>
+        <input matInput [(ngModel)]="seriesTo">
+      </mat-form-field>
+    </div>
+    <div fxFlex="20">
+      <mat-form-field [style.width.px]="50">
+        <mat-label>Step</mat-label>
+        <input matInput [(ngModel)]="seriesStep">
+      </mat-form-field>
+    </div>
+    <div fxFlex="10">
+      <button mat-icon-button (click)="seriesGroup()"><i class="material-icons">add</i></button>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Abbrechen</button>
+    <button mat-button (click)="submit()" cdkFocusInitial>Ok</button>
+  </div>
+
+</div>

@@ -1,0 +1,16 @@
+<div fxLayout="column" fxLayoutAlign="space-between">
+  Ergebnis:
+  <div fxLayout="row" fxLayoutAlign="space-around" *ngFor="let message of data.removeMessages">
+    {{message}}
+  </div>
+  <div *ngIf="data.foundMessages.length > 0" fxLayout="row" fxLayoutAlign="space-around">
+    ---------------------------------
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-around" *ngFor="let message of data.foundMessages">
+    {{message}}
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="null" cdkFocusInitial>Ok
+    </button>
+  </div>
+</div>
