@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.sarux.logik.helper.LogikException;
 import de.sarux.logik.helper.LogikProblem;
-import de.sarux.logik.helper.application.ProblemBean;
 import de.sarux.logik.helper.detektor.DetektorBean;
 import de.sarux.logik.helper.detektor.LogikDetektorProblem;
 import de.sarux.logik.helper.group.LogikGroupsBean;
@@ -59,7 +58,8 @@ public class LogikProblemIoController {
         if (detektorBean.getCurrentProblem() != null && !detektorBean.getCurrentProblem().isEmpty()) {
             exportedContent = objectMapper.writeValueAsString(detektorBean.getCurrentProblem());
         } else {
-            exportedContent = objectMapper.writeValueAsString(problemBean.getCurrentProblem());
+            // TODO
+            exportedContent = objectMapper.writeValueAsString(problemBean.getProblem("solve0"));
         }
 
         String filename = "problem.json"; // Ignored?
@@ -71,7 +71,7 @@ public class LogikProblemIoController {
 
     @PostMapping("problem/load")
     public int handleFileUpload(@RequestParam("file") MultipartFile file,
-                                    RedirectAttributes redirectAttributes) throws LogikException {
+                                RedirectAttributes redirectAttributes) throws LogikException {
         int problemType = 0;
         try {
             InputStream inputStream = file.getInputStream();
@@ -85,7 +85,7 @@ public class LogikProblemIoController {
             Class<?> cls;
             if (typeNode == null || typeNode.asText() == null) {
                 cls = LogikProblem.class;
-                ((ObjectNode)jsonNode).put("@type", LogikProblem.class.getName());
+                ((ObjectNode) jsonNode).put("@type", LogikProblem.class.getName());
             } else {
                 cls = Class.forName(typeNode.asText());
             }

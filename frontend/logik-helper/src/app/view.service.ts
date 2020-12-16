@@ -13,9 +13,9 @@ private viewUrl: string;
         this.viewUrl = 'http://localhost:8080/view';
       }
 
-      public loadMultipleRelationView() : Observable<LogikViewLine[]> {
+      public loadMultipleRelationView(key: string) : Observable<LogikViewLine[]> {
                const opts = { params: new HttpParams() };
 
-          return this.http.get<LogikViewLine[]>('http://localhost:8080/view/multiple', opts);
+          return this.http.get<LogikViewLine[]>('http://localhost:8080/solve/problems/' + key + '/view/multiple?problem=' + key, opts);
       }
 }

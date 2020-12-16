@@ -21,6 +21,10 @@
       <button [disabled]="selectedLines.length == 0" (click)="blockUp()">Up</button>
       <button [disabled]="selectedLines.length == 0" (click)="blockDown()">Down</button>
     </div>
+    <div>
+      <button [disabled]="selectedLines.length !== 2" (click)="newCase()">Fallunterscheidung</button>
+      <button *ngIf="isCase()" (click)="closeCase()">Fall ausschließen</button>
+    </div>
 
   </div>
   <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">

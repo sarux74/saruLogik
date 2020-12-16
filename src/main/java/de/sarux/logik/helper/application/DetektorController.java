@@ -235,7 +235,8 @@ public class DetektorController {
             copyBlock(problemBean, (result.isPairTruth()) ? pair.getTrueBlock() : pair.getFalseBlock());
         }
 
-        problemViewBean.buildProblemView(problemBean.getCurrentProblem());
+        // TODO: Key
+        problemViewBean.buildProblemView(problemBean.getProblem("solve0"));
     }
 
     @PutMapping("/exclude")
@@ -308,10 +309,12 @@ public class DetektorController {
 
     private void copyBlock(ProblemBean problem, LogikBlock block) {
         Map<LogikLine, LogikLine> copiedLines = new HashMap<>();
-        LogikBlock copiedBLock = problem.getCurrentProblem().newBlock(block.getName());
+        // TODO
+        LogikBlock copiedBLock = problemBean.getProblem("solve0").newBlock(block.getName());
         for (LogikLine line : block.getMainLines()) {
             if (!copiedLines.containsKey(line)) {
-                LogikLine logikLine = problem.getCurrentProblem().newMainLine(copiedBLock);
+                // TODO
+                LogikLine logikLine = problemBean.getProblem("solve0").newMainLine(copiedBLock);
                 logikLine.copyFrom(line);
                 copiedLines.put(line, logikLine);
             } else {
@@ -321,7 +324,8 @@ public class DetektorController {
 
         for (LogikLine line : block.getSubLines()) {
             if (!copiedLines.containsKey(line)) {
-                LogikLine logikLine = problem.getCurrentProblem().newSubLine(copiedBLock);
+                // TODO
+                LogikLine logikLine = problemBean.getProblem("solve0").newSubLine(copiedBLock);
                 logikLine.copyFrom(line);
                 copiedLines.put(line, logikLine);
             } else {

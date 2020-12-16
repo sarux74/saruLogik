@@ -6,6 +6,7 @@ import {LogikViewLine} from '../solve/model/logik-view-line';
 import {IdNamePair} from './id-name-pair';
 import { ErrorDialog} from '../dialog/error-dialog/error-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-block-compare-view',
@@ -28,7 +29,10 @@ export class BlockCompareViewComponent implements OnInit {
   block2Id = -1;
   proposed: boolean[][];
 
-  constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog) { }
+  key: string;
+  private sub: any;
+
+  constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.groupService.current().subscribe(data => {
@@ -37,11 +41,17 @@ export class BlockCompareViewComponent implements OnInit {
         console.log(this.flexPercent);
     });
 
-    this.solveService.loadComparableBlocks().subscribe(data => {
-        this.blocks = data;
-        this.blocks1 = data;
-        this.blocks2 = data;
-    })
+this.sub = this.route.params.subscribe(params => {
+               this.key = params['problem']; // (+) converts string 'id' to a number
+            this.solveService.loadComparableBlocks(this.key).subscribe(data => {
+                    this.blocks = data;
+                    this.blocks1 = data;
+                    this.blocks2 = data;
+                })
+
+               // In a real app: dispatch action to load the details here.
+          });
+
   }
 
   selectBlock2List() {
@@ -76,7 +86,7 @@ export class BlockCompareViewComponent implements OnInit {
   loadBlockCompareView() {
   console.log('Load mit ' + this.block1Id + ' und ' + this.block2Id);
     if(this.block1Id > -1 && this.block2Id > -1 && this.block1Id !== this.block2Id) {
-      this.solveService.loadBlockCompareView(this.block1Id, this.block2Id).subscribe(data => {
+      this.solveService.loadBlockCompareView(this.key, this.block1Id, this.block2Id).subscribe(data => {
       console.log(data);
         this.lines = data.viewLines;
         this.block1LineIds = data.block1LineIds;
@@ -111,7 +121,7 @@ export class BlockCompareViewComponent implements OnInit {
   }
 
   merge() {
-    this.solveService.mergeLines(this.selectedLine1, this.selectedLine2).subscribe(data => {
+    this.solveService.mergeLines(this.key, this.selectedLine1, this.selectedLine2).subscribe(data => {
         this.loadBlockCompareView();
       }, error => {
             console.log(error);

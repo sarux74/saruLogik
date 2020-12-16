@@ -26,15 +26,15 @@ public class SolverController {
         this.logikGroupsBean = logikGroupsBean;
     }
 
-    @GetMapping("/lines")
-    public LogicBlockView getLines() {
-        return problemViewBean.getView(SOLVE_VIEW_NAME);
+    @GetMapping("/problems/{problemKey}/view")
+    public LogicBlockView getLines(@PathVariable String problemKey) {
+        return problemViewBean.getView(SOLVE_VIEW_NAME + problemKey);
     }
 
-    @PutMapping("/selection")
-    boolean updateSelection(@RequestBody UpdateSelectionInput updateSelectionInput) {
-        LogikProblem problem = problemBean.getCurrentProblem();
-        LogicBlockView view = problemViewBean.getView("solve");
+    @PutMapping("/problems/{problemKey}/selection")
+    boolean updateSelection(@PathVariable String problemKey, @RequestBody UpdateSelectionInput updateSelectionInput) {
+        LogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
+        LogicBlockView view = problemViewBean.getView(SOLVE_VIEW_NAME + problemKey);
         LogikLine line = problem.getLine(updateSelectionInput.getLineId());
         LogikGroup group = problem.getGroup(updateSelectionInput.getGroupId());
         final List<LogikElement> selectedElements = new ArrayList<>();
@@ -50,20 +50,23 @@ public class SolverController {
     @PutMapping("/new")
     boolean newProblem() {
         problemBean.init(logikGroupsBean.getGroups());
-        problemViewBean.initView(SOLVE_VIEW_NAME, logikGroupsBean.getGroups());
+        problemViewBean.initView(SOLVE_VIEW_NAME + 0, logikGroupsBean.getGroups());
         return true;
     }
 
-    @PutMapping("/block/new")
-    boolean newBlock(@RequestBody NewBlockInput newBlockInput) {
-        final LogikProblem problem = problemBean.getCurrentProblem();
-        LogikBlock block = problemBean.getCurrentProblem().newBlock(newBlockInput.getBlockName());
+    @PutMapping("/problems/{problemKey}/block/new")
+    boolean newBlock(@PathVariable String problemKey, @RequestBody NewBlockInput newBlockInput) {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
+        LogikBlock block = problem.newBlock(newBlockInput.getBlockName());
         if (newBlockInput.isNoDuplicates() || newBlockInput.getGroupId() != null)
             block.setNoDuplicates(true);
 
         LogikLine newLine = (newBlockInput.getGroupId() != null) ? null : problem.newMainLine(block);
 
-        problemViewBean.getView(SOLVE_VIEW_NAME).newBlock(problemBean.getCurrentProblem().getGroups(), block, newLine);
+        view.newBlock(problem.getGroups(), block, newLine);
 
         if (newBlockInput.getGroupId() != null) {
             LogikGroup blockGroup = problem.getGroup(newBlockInput.getGroupId());
@@ -80,15 +83,18 @@ public class SolverController {
                         groupId++;
                     }
                 }
-                problemViewBean.getView(SOLVE_VIEW_NAME).addBlockLine(block, problem.getGroups(), blockLine);
+                view.addBlockLine(block, problem.getGroups(), blockLine);
             }
         }
         return true;
     }
 
-    @PutMapping("/relation/new")
-    boolean newRelation(@RequestBody NewRelationInput newRelationInput) throws LogikException {
-        LogikProblem problem = problemBean.getCurrentProblem();
+    @PutMapping("/problems/{problemKey}/relation/new")
+    boolean newRelation(@PathVariable String problemKey, @RequestBody NewRelationInput newRelationInput) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikBlock block = problem.getBlocks().get(newRelationInput.getBlockId());
         LogikGroup groupFrom = problem.getGroup(newRelationInput.getGroupFrom());
         LogikGroup groupTo = problem.getGroup(newRelationInput.getGroupTo());
@@ -112,13 +118,13 @@ public class SolverController {
                     relation.setType(type);
                     relation.setRelationHint(value);
                 }
-            } else if(type != LogikRelationType.NONE) {
+            } else if (type != LogikRelationType.NONE) {
                 LogikLine fromLine = problem.getLine(newRelationInput.getLeftLineId());
                 LogikLine toLine = problem.getLine(newRelationInput.getRightLineId());
                 LogikLineRelation newRelation = block.newRelation(fromLine, groupFrom, toLine, groupTo, type, value, isSubLine);
                 relatedRelations.add(newRelation);
             }
-            problemViewBean.getView(SOLVE_VIEW_NAME).updateRelation(block, relatedRelations);
+            view.updateRelation(block, relatedRelations);
         } else {
             if (type != LogikRelationType.NONE) {
                 LogikLine fromLine = problem.getLastMainLine(block);
@@ -128,29 +134,35 @@ public class SolverController {
                 else
                     toLine = problem.newMainLine(block);
                 LogikLineRelation newRelation = block.newRelation(fromLine, groupFrom, toLine, groupTo, type, value, isSubLine);
-                problemViewBean.getView(SOLVE_VIEW_NAME).newRelation(block, problem.getGroups(), newRelation);
+                view.newRelation(block, problem.getGroups(), newRelation);
             } else {
                 if (isSubLine)
                     throw new LogikException("Eine Nebenbedingung muss auch eine richtige Beziehung haben!");
                 LogikLine toLine = problem.newMainLine(block);
-                problemViewBean.getView(SOLVE_VIEW_NAME).addBlockLine(block, problem.getGroups(), toLine);
+                view.addBlockLine(block, problem.getGroups(), toLine);
             }
         }
         return true;
     }
 
-    @PutMapping("/block/flip")
-    boolean flipBlock(@RequestBody Integer blockId) throws LogikException {
-        LogikProblem problem = problemBean.getCurrentProblem();
-        LogikBlock block = problem.getBlocks().get(blockId);
+    @PutMapping("/problems/{problemKey}/block/flip")
+    boolean flipBlock(@PathVariable String problemKey, @RequestBody Integer blockId) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
+        final LogikBlock block = problem.getBlocks().get(blockId);
         block.flip();
-        problemViewBean.getView(SOLVE_VIEW_NAME).flipBlock(problem.getGroups(), block);
+        view.flipBlock(problem.getGroups(), block);
         return true;
     }
 
-    @PutMapping("/block/lineup")
-    boolean lineUp(@RequestBody BlockMove blockMove) throws LogikException {
-        LogikProblem problem = problemBean.getCurrentProblem();
+    @PutMapping("/problems/{problemKey}/block/lineup")
+    boolean lineUp(@PathVariable String problemKey, @RequestBody BlockMove blockMove) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikBlock block = problem.getBlocks().get(blockMove.getBlockId());
         if (!block.isNoDuplicates())
             throw new LogikException("Für nicht-singuläre Blöcke ist kein Verschieben vorgesehen!");
@@ -161,14 +173,17 @@ public class SolverController {
             block.getMainLines().remove(oldIndex);
             block.getMainLines().add(oldIndex - 1, line);
         }
-        problemViewBean.getView(SOLVE_VIEW_NAME).hideBlock(block);
-        problemViewBean.getView(SOLVE_VIEW_NAME).showBlock(problem.getGroups(), block);
+        view.hideBlock(block);
+        view.showBlock(problem.getGroups(), block);
         return true;
     }
 
-    @PutMapping("/block/linedown")
-    boolean lineDown(@RequestBody BlockMove blockMove) throws LogikException {
-        LogikProblem problem = problemBean.getCurrentProblem();
+    @PutMapping("/problems/{problemKey}/block/linedown")
+    boolean lineDown(@PathVariable String problemKey, @RequestBody BlockMove blockMove) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikBlock block = problem.getBlocks().get(blockMove.getBlockId());
         if (!block.isNoDuplicates())
             throw new LogikException("Für nicht-singuläre Blöcke ist kein Verschieben vorgesehen!");
@@ -179,43 +194,55 @@ public class SolverController {
             block.getMainLines().remove(oldIndex);
             block.getMainLines().add(oldIndex + 1, line);
         }
-        problemViewBean.getView(SOLVE_VIEW_NAME).hideBlock(block);
-        problemViewBean.getView(SOLVE_VIEW_NAME).showBlock(problem.getGroups(), block);
+        view.hideBlock(block);
+        view.showBlock(problem.getGroups(), block);
         return true;
     }
 
-    @PutMapping("/block/show")
-    boolean showBlock(@RequestBody Integer blockId) throws LogikException {
-        LogikProblem problem = problemBean.getCurrentProblem();
+    @PutMapping("/problems/{problemKey}/block/show")
+    boolean showBlock(@PathVariable String problemKey, @RequestBody Integer blockId) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikBlock block = problem.getBlocks().get(blockId);
-        problemViewBean.getView(SOLVE_VIEW_NAME).showBlock(problem.getGroups(), block);
+        view.showBlock(problem.getGroups(), block);
         return true;
     }
 
-    @PutMapping("/block/hide")
-    boolean hideBlock(@RequestBody Integer blockId) {
-        LogikProblem problem = problemBean.getCurrentProblem();
+    @PutMapping("/problems/{problemKey}/block/hide")
+    boolean hideBlock(@PathVariable String problemKey, @RequestBody Integer blockId) {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikBlock block = problem.getBlocks().get(blockId);
-        problemViewBean.getView(SOLVE_VIEW_NAME).hideBlock(block);
+        view.hideBlock(block);
         return true;
     }
 
-    @PutMapping("/negative")
-    ChangeResult findNegatives(@RequestBody Integer lineId) throws LogikException {
-        LogikProblem problem = problemBean.getCurrentProblem();
+    @PutMapping("/problems/{problemKey}/negative")
+    ChangeResult findNegatives(@PathVariable String problemKey, @RequestBody Integer lineId) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikLine line = problem.getLine(lineId);
-        SolveHelper helper = new SolveHelper(problem, problemViewBean.getView(SOLVE_VIEW_NAME));
+        SolveHelper helper = new SolveHelper(problem, view);
         ChangeResult result = helper.findNegatives(line);
         helper.checkSolvability(problem);
         return result;
     }
 
-    @PutMapping("/positive")
-    ChangeResult findPositives(@RequestBody List<Integer> lineIds) throws LogikException {
+    @PutMapping("/problems/{problemKey}/positive")
+    ChangeResult findPositives(@PathVariable String problemKey, @RequestBody List<Integer> lineIds) throws LogikException {
 
-        LogikProblem problem = problemBean.getCurrentProblem();
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikLine line = problem.getLine(lineIds.get(0));
-        SolveHelper helper = new SolveHelper(problem, problemViewBean.getView(SOLVE_VIEW_NAME));
+        SolveHelper helper = new SolveHelper(problem, view);
 
         List<LogikLine> mergeLines = null;
         if (lineIds.size() > 1) {
@@ -229,22 +256,28 @@ public class SolverController {
         return result;
     }
 
-    @PutMapping("/merge")
-    boolean merge(@RequestBody MergeLines mergeLines) throws LogikException {
-        LogikProblem problem = problemBean.getCurrentProblem();
+    @PutMapping("/problems/{problemKey}/merge")
+    boolean merge(@PathVariable String problemKey, @RequestBody MergeLines mergeLines) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
         LogikLine line1 = problem.getLine(mergeLines.getLine1Id());
         LogikLine line2 = problem.getLine(mergeLines.getLine2Id());
-        SolveHelper helper = new SolveHelper(problem, problemViewBean.getView(SOLVE_VIEW_NAME));
+        SolveHelper helper = new SolveHelper(problem, view);
         boolean result = helper.mergeLines(line1, line2);
         helper.checkSolvability(problem);
         return result;
     }
 
-    @PutMapping("/blocking_candidates")
-    boolean applyBlockingCandidates(@RequestBody BlockingCandidates blockingCandidates) throws LogikException {
+    @PutMapping("/problems/{problemKey}/blocking_candidates")
+    boolean applyBlockingCandidates(@PathVariable String problemKey, @RequestBody BlockingCandidates blockingCandidates) throws LogikException {
         int groupId = blockingCandidates.getGroupId();
-        LogikProblem problem = problemBean.getCurrentProblem();
-        SolveHelper solveHelper = new SolveHelper(problemBean.getCurrentProblem(), problemViewBean.getView(SOLVE_VIEW_NAME));
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+
+        SolveHelper solveHelper = new SolveHelper(problem, view);
         List<LogicBlockViewLine> groupLines = solveHelper.buildGroupViewLines(blockingCandidates.getGroupId());
         List<Set<LogikElement>> collectedElements = new ArrayList<>();
         for (int i = 0; i < problem.getGroups().size(); i++) {
@@ -276,10 +309,10 @@ public class SolverController {
                 case IMPOSSIBLE:
                     throw new LogikException("Widersprüchlicher BlockingType");
                 case INCLUDE:
-                    changes |= removeOthers(line, collectedElements);
+                    changes |= removeOthers(problem, view, line, collectedElements);
                     break;
                 case EXCLUDE:
-                    changes |= removeCandidates(line, collectedElements);
+                    changes |= removeCandidates(problem, view, line, collectedElements);
                     break;
                 default:
                     // Do nothing
@@ -289,7 +322,99 @@ public class SolverController {
         return changes;
     }
 
-    private boolean removeOthers(LogikLine line, List<Set<LogikElement>> collectedElements) {
+
+    @PutMapping("/problems/{problemKey}/case/new")
+    String newCase(@PathVariable String problemKey, @RequestBody MergeLines mergeLines) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+
+        LogikProblem copyProblem = copyProblem(problem);
+        LogicBlockView copyView = problemViewBean.buildView(copyProblem.getGroups(), copyProblem.getBlocks());
+
+        LogikLine line1 = copyProblem.getLine(mergeLines.getLine1Id());
+        LogikLine line2 = problem.getLine(mergeLines.getLine2Id());
+        SolveHelper helper = new SolveHelper(copyProblem, copyView);
+        helper.mergeLines(line1, line2);
+        helper.checkSolvability(problem);
+
+        copyProblem.setCaseData(problemKey, mergeLines.getLine1Id(), mergeLines.getLine2Id());
+        String key = problemBean.newKey();
+        String copyProblemKey = "solve" + key;
+
+        problemBean.addProblem(copyProblemKey, copyProblem);
+        problemViewBean.addProblemView(copyProblemKey, copyView);
+
+        return key;
+    }
+
+    @PutMapping("/problems/{problemKey}/case/close")
+    boolean closeCase(@PathVariable String problemKey) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+
+        LogikProblem parentProblem = problemBean.getProblem(SOLVE_VIEW_NAME + problem.getParentProblemKey());
+        LogicBlockView parentView = problemViewBean.getView(SOLVE_VIEW_NAME + problem.getParentProblemKey());
+        LogikLine line1 = parentProblem.getLine(problem.getLine1Id());
+        LogikLine line2 = parentProblem.getLine(problem.getLine2Id());
+
+        for(LogikGroup group : problem.getGroups()) {
+            List<LogikElement> selectables1 = line1.getSelectables(group);
+            List<LogikElement> selectables2 = line2.getSelectables(group);
+
+            if(selectables1.size() == 1) {
+                selectables2.remove(selectables1.get(0));
+                parentView.updateSelection(line2, group, selectables2);
+            }
+            if(selectables2.size() == 1){
+                selectables1.remove(selectables2.get(0));
+                parentView.updateSelection(line1, group, selectables1);
+            }
+        }
+
+        problemBean.removeProblem(problemName);
+        problemViewBean.removeView(problemName);
+
+        return true;
+    }
+
+    private LogikProblem copyProblem(LogikProblem problem) {
+        Map<LogikLine, LogikLine> copiedLines = new HashMap<>();
+        LogikProblem copyProblem = new LogikProblem(problem.getGroups());
+        for(LogikBlock block: problem.getBlocks()) {
+
+            LogikBlock copiedBLock = copyProblem.newBlock(block.getName());
+            for (LogikLine line : block.getMainLines()) {
+                if (!copiedLines.containsKey(line)) {
+                    LogikLine logikLine = copyProblem.newMainLine(copiedBLock);
+                    logikLine.copyFrom(line);
+                    copiedLines.put(line, logikLine);
+                } else {
+                    copiedBLock.addMainLine(copiedLines.get(line));
+                }
+            }
+
+            for (LogikLine line : block.getSubLines()) {
+                if (!copiedLines.containsKey(line)) {
+                    LogikLine logikLine = copyProblem.newSubLine(copiedBLock);
+                    logikLine.copyFrom(line);
+                    copiedLines.put(line, logikLine);
+                } else {
+                    copiedBLock.addSubLine(copiedLines.get(line));
+                }
+            }
+
+            for (LogikLineRelation relation : block.getRelations()) {
+                LogikLine leftLine = copiedLines.get(relation.getLeftLine());
+                LogikLine rightLine = copiedLines.get(relation.getRightLine());
+
+                copiedBLock.newRelation(leftLine, relation.getLeftGroup(), rightLine, relation.getRightGroup(), relation.getType(), relation.getRelationHint(), relation.isSubRelation());
+
+            }
+        }
+        return copyProblem;
+    }
+
+    private boolean removeOthers(LogikProblem problem, LogicBlockView view, LogikLine line, List<Set<LogikElement>> collectedElements) {
         boolean changes = false;
         for (int i = 0; i < collectedElements.size(); i++) {
             Set<LogikElement> candidateElements = collectedElements.get(i);
@@ -297,8 +422,8 @@ public class SolverController {
                 boolean singleChange = line.getSelectableElements().get(i).removeIf(o -> !candidateElements.contains(o));
 
                 if (singleChange) {
-                    final LogikGroup group = problemBean.getCurrentProblem().getGroup(i);
-                    problemViewBean.getView(SOLVE_VIEW_NAME).updateSelection(line, group, line.getSelectables(group));
+                    final LogikGroup group = problem.getGroup(i);
+                    view.updateSelection(line, group, line.getSelectables(group));
                 }
                 changes |= singleChange;
             }
@@ -306,15 +431,15 @@ public class SolverController {
         return changes;
     }
 
-    private boolean removeCandidates(LogikLine line, List<Set<LogikElement>> collectedElements) {
+    private boolean removeCandidates(LogikProblem problem, LogicBlockView view, LogikLine line, List<Set<LogikElement>> collectedElements) {
         boolean changes = false;
         for (int i = 0; i < collectedElements.size(); i++) {
             Set<LogikElement> candidateElements = collectedElements.get(i);
             if (candidateElements != null) {
-                boolean singleChange = line.getSelectableElements().get(i).removeIf(o -> candidateElements.contains(o));
+                boolean singleChange = line.getSelectableElements().get(i).removeIf(candidateElements::contains);
                 if (singleChange) {
-                    final LogikGroup group = problemBean.getCurrentProblem().getGroup(i);
-                    problemViewBean.getView(SOLVE_VIEW_NAME).updateSelection(line, group, line.getSelectables(group));
+                    final LogikGroup group = problem.getGroup(i);
+                    view.updateSelection(line, group, line.getSelectables(group));
                 }
             }
         }

@@ -56,5 +56,6 @@ public class LogikLine {
             List<LogikElement> copiedElements = new ArrayList<>(elementList);
             selectableElements.add(copiedElements);
         }
+        lineId = line.getLineId();
     }
 }

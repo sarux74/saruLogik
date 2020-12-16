@@ -80,7 +80,7 @@ export class GroupComponent implements OnInit {
 
   openSolver() {
     const url = this.router.serializeUrl(
-       this.router.createUrlTree(['/solve'])
+       this.router.createUrlTree(['/solve', {'problem' : 0}])
      );
 
     window.open(url, '_blank');
