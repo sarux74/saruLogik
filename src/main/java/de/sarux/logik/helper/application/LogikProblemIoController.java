@@ -55,7 +55,7 @@ public class LogikProblemIoController {
 
         String exportedContent;
         // First check if detektor
-        if (detektorBean.getCurrentProblem() != null && !detektorBean.getCurrentProblem().isEmpty()) {
+        if (detektorBean.getCurrentProblem() != null) {
             exportedContent = objectMapper.writeValueAsString(detektorBean.getCurrentProblem());
         } else {
             // TODO
@@ -72,7 +72,7 @@ public class LogikProblemIoController {
     @PostMapping("problem/load")
     public int handleFileUpload(@RequestParam("file") MultipartFile file,
                                 RedirectAttributes redirectAttributes) throws LogikException {
-        int problemType = 0;
+        int problemType;
         try {
             InputStream inputStream = file.getInputStream();
             ObjectMapper mapper = new ObjectMapper();

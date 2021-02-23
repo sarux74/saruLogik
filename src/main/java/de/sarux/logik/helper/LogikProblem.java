@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.sarux.logik.helper.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;

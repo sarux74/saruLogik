@@ -262,7 +262,7 @@ export class DetektorComponent implements OnInit {
       this.detektorService.prepare(ids).subscribe(result => {
 
     const url = this.router.serializeUrl(
-        this.router.createUrlTree(['/solve'])
+        this.router.createUrlTree(['/solve', {'problem' : 0}])
       );
 
       window.open(url, '_blank');

@@ -13,6 +13,7 @@ export class ErrorDialog implements OnInit {
                                 @Inject(MAT_DIALOG_DATA) public message: string) { }
 
   ngOnInit(): void {
+    console.log(this.message);
   }
 
 }

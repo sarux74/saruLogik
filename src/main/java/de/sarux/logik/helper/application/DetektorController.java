@@ -171,7 +171,7 @@ public class DetektorController {
     }
 
     @PutMapping("/negative")
-    ChangeResult findNegatives(@RequestBody Integer lineId) throws LogikException {
+    ChangeResult findNegatives(@RequestBody Integer lineId) {
         LogikDetektorProblem problem = detektorBean.getCurrentProblem();
         LogikLine line = problem.getLine(lineId);
         DetektorHelper helper = new DetektorHelper(problem, problemViewBean.getView(DETEKTOR_VIEW_NAME));
@@ -243,6 +243,8 @@ public class DetektorController {
     public ChangeResult exclude(@RequestBody List<Integer> blockIds) throws LogikException {
         LogikDetektorProblem problem = detektorBean.getCurrentProblem();
 
+        // For compatibility with older problems
+        problem.checkBlockNames();
         List<LineSearchResult> results = new ArrayList<>();
         for (Integer blockId : blockIds) {
             results.add(problem.searchBlock(blockId));
