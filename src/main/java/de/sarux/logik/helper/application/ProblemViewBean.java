@@ -1,10 +1,8 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.LogikBlock;
-import de.sarux.logik.helper.LogikException;
 import de.sarux.logik.helper.LogikProblem;
-import de.sarux.logik.helper.detektor.LogikDetektorProblem;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.detektor.LogikDetektorProblem;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
@@ -23,7 +21,7 @@ public class ProblemViewBean {
         return views.get(name);
     }
 
-    private LogicBlockView buildView(List<LogikGroup> groups, List<LogikBlock> blocks) throws LogikException {
+    public LogicBlockView buildView(List<LogikGroup> groups, List<LogikBlock> blocks) throws LogikException {
         LogicBlockView currentView = new LogicBlockView(groups.size());
 
         for (LogikBlock block : blocks) {
@@ -45,7 +43,7 @@ public class ProblemViewBean {
 
     public void buildProblemView(LogikProblem problem) throws LogikException {
         LogicBlockView logicBlockView = buildView(problem.getGroups(), problem.getBlocks());
-        views.put(SolverController.SOLVE_VIEW_NAME, logicBlockView);
+        views.put(SolverController.SOLVE_VIEW_NAME + "0", logicBlockView);
     }
 
     public void initView(String solveViewName, List<LogikGroup> groups) {
@@ -59,5 +57,13 @@ public class ProblemViewBean {
     public void buildDetektorView(LogikDetektorProblem problem) throws LogikException {
         LogicBlockView logicBlockView = buildView(problem.getGroups(), problem.getAllBlocks());
         views.put(DetektorController.DETEKTOR_VIEW_NAME, logicBlockView);
+    }
+
+    public void addProblemView(String copyProblemKey, LogicBlockView copyView) {
+        views.put(copyProblemKey, copyView);
+    }
+
+    public void removeView(String key) {
+        views.remove(key);
     }
 }

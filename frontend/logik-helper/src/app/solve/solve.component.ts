@@ -12,8 +12,7 @@ import { NewRelationDialog} from './dialog/new-relation-dialog/new-relation-dial
 import { ShowChangesDialog} from './dialog/show-changes/show-changes.component';
 import { ErrorDialog} from '../dialog/error-dialog/error-dialog.component';
 import { Router } from '@angular/router';
-
-
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-solve',
@@ -30,7 +29,12 @@ export class SolveComponent implements OnInit {
   flexPercent: number;
   public selectedLines: LogikViewLine[] = [];
   markedLines: number[] = [];
-  constructor(private groupService: GroupService,private solveService: SolveService, public dialog: MatDialog, private router: Router) { }
+
+  key: string;
+  private sub: any;
+
+  constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog, private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.groupService.current().subscribe(data => {
@@ -38,11 +42,20 @@ export class SolveComponent implements OnInit {
       this.flexPercent = Math.floor(94 / this.groups.length);
       console.log(this.flexPercent);
     });
-    this.loadView();
+     this.sub = this.route.params.subscribe(params => {
+           this.key = params['problem']; // (+) converts string 'id' to a number
+        this.loadView(this.key);
+
+           // In a real app: dispatch action to load the details here.
+        });
   }
 
-  loadView() {
-    this.solveService.load().subscribe((data: LogikView) => {
+  ngOnDestroy() {
+      this.sub.unsubscribe();
+    }
+
+  loadView(problemKey: string) {
+    this.solveService.load(problemKey).subscribe((data: LogikView) => {
       this.origLines = data.lines;
       this.selectedLines = [];
       this.toggleEdit();
@@ -100,9 +113,9 @@ export class SolveComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result)
-        this.solveService.updateSelection(line.lineId, index, result).subscribe(result => {
+        this.solveService.updateSelection(this.key, line.lineId, index, result).subscribe(result => {
           console.log(result);
-          this.loadView();
+          this.loadView(this.key);
         })
       });
   }
@@ -114,9 +127,9 @@ export class SolveComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if(result)
-          this.solveService.newBlock(result).subscribe(result => {
+          this.solveService.newBlock(this.key, result).subscribe(result => {
             console.log(result);
-            this.loadView();
+            this.loadView(this.key);
           })
         });
     }
@@ -149,52 +162,98 @@ export class SolveComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if(result)
-          this.solveService.newRelation(result).subscribe(result => {
+          this.solveService.newRelation(this.key, result).subscribe(result => {
             console.log(result);
-            this.loadView();
+            this.loadView(this.key);
           })
       });
   }
 
  flipBlock(blockId: number) {
-   this.solveService.flipBlock(blockId).subscribe(result => {
-       this.loadView();
+   this.solveService.flipBlock(this.key, blockId).subscribe(result => {
+       this.loadView(this.key);
     })
  }
 
  showBlock(blockId: number) {
-    this.solveService.showBlock(blockId).subscribe(result => {
-      this.loadView();
+    this.solveService.showBlock(this.key, blockId).subscribe(result => {
+      this.loadView(this.key);
     })
  }
 
  hideBlock(blockId: number) {
-    this.solveService.hideBlock(blockId).subscribe(result => {
-      this.loadView();
+    this.solveService.hideBlock(this.key, blockId).subscribe(result => {
+      this.loadView(this.key);
     })
+  }
+
+  isCase() {
+    return +this.key > 0;
+  }
+
+  newCase() {
+    if(this.selectedLines.length == 2) {
+      this.solveService.newCase(this.key, this.selectedLines[0].lineId, this.selectedLines[1].lineId).subscribe(result => {
+      console.log(result);
+        const url = this.router.serializeUrl(
+          this.router.createUrlTree(['/solve', {'problem' : result}])
+          );
+
+          window.open(url, '_blank');
+      })
+      }
+  }
+
+  closeCase() {
+    this.solveService.closeCase(this.key).subscribe(result => {
+      window.close();
+    });
   }
 
   findNegatives() {
     console.log(this.selectedLines);
     if(this.selectedLines.length != 1)
       return;
-    this.solveService.findNegatives(this.selectedLines[0].lineId).subscribe(result => {
+    this.solveService.findNegatives(this.key, this.selectedLines[0].lineId).subscribe(result => {
       if(result) {
-        this.markedLines = result.changedLines;
+        this.mergeMarkedLines(result.changedLines, this.selectedLines[0].lineId);
+        // this.markedLines = result.changedLines;
         const dialogRef = this.dialog.open(ShowChangesDialog, {
               width: '400px',
                data: result
             });
 
             dialogRef.afterClosed().subscribe(result => {
-                    this.loadView();
+                    this.loadView(this.key);
              });
         }
       }, error => {
         console.log(error);
         this.openErrorDialog(error.error.message);
-        this.loadView();
+        this.loadView(this.key);
       });
+  }
+
+  mergeMarkedLines(newLines: number[], exceptedLine: number) {
+    const mergedLines = [];
+    for(const lineId of this.markedLines) {
+      if (lineId != exceptedLine)
+        mergedLines.push(lineId);
+    }
+    for(const lineId of newLines) {
+      let found = false;
+      for(const checkLineId of mergedLines) {
+        if (checkLineId == lineId) {
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+        mergedLines.push(lineId);
+    }
+    mergedLines.sort();
+
+    this.markedLines = mergedLines;
   }
 
   findPositives() {
@@ -205,17 +264,18 @@ export class SolveComponent implements OnInit {
     for(const line of this.selectedLines)
       ids.push(line.lineId);
 
-    this.solveService.findPositives(ids).subscribe(result => {
+    this.solveService.findPositives(this.key, ids).subscribe(result => {
       console.log(result);
       if(result) {
-        this.markedLines = result.changedLines;
+        this.mergeMarkedLines(result.changedLines, this.selectedLines[0].lineId);
+        //this.markedLines = result.changedLines;
         const dialogRef = this.dialog.open(ShowChangesDialog, {
                 width: '400px',
                  data: result
               });
 
               dialogRef.afterClosed().subscribe(result => {
-                      this.loadView();
+                      this.loadView(this.key);
                });
           }
       }, error => {
@@ -254,16 +314,16 @@ console.log(rightLineId);
 
     dialogRef.afterClosed().subscribe(result => {
       if(result)
-        this.solveService.newRelation(result).subscribe(result => {
+        this.solveService.newRelation(this.key, result).subscribe(result => {
             console.log(result);
-            this.loadView();
+            this.loadView(this.key);
         })
     });
   }
 
   openCompactView() {
     const url = this.router.serializeUrl(
-        this.router.createUrlTree(['/view/compact'])
+        this.router.createUrlTree(['/view/compact', {'problem' : this.key}])
       );
 
       window.open(url, '_blank');
@@ -271,7 +331,7 @@ console.log(rightLineId);
 
   openGroupView() {
       const url = this.router.serializeUrl(
-          this.router.createUrlTree(['/view/group'])
+          this.router.createUrlTree(['/view/group', {'problem' : this.key}])
         );
 
         window.open(url, '_blank');
@@ -279,7 +339,7 @@ console.log(rightLineId);
 
     openBlockCompareView() {
       const url = this.router.serializeUrl(
-          this.router.createUrlTree(['/view/block'])
+          this.router.createUrlTree(['/view/block', {'problem' : this.key}])
         );
 
         window.open(url, '_blank');
@@ -287,18 +347,26 @@ console.log(rightLineId);
 
     openMultipleRelationView() {
       const url = this.router.serializeUrl(
-          this.router.createUrlTree(['/view/multiple'])
+          this.router.createUrlTree(['/view/multiple', {'problem' : this.key}])
         );
 
         window.open(url, '_blank');
     }
 
+      openPositioner() {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree(['/view/positioner', {'problem' : this.key}])
+          );
+
+          window.open(url, '_blank');
+      }
+
     blockUp() {
      if(this.selectedLines.length != 1)
           return;
 
-      this.solveService.blockUp(this.selectedLines[0]).subscribe(result => {
-        this.loadView();
+      this.solveService.blockUp(this.key, this.selectedLines[0]).subscribe(result => {
+        this.loadView(this.key);
       }, error => {
          console.log(error);
        this.openErrorDialog(error);
@@ -310,13 +378,19 @@ console.log(rightLineId);
       if(this.selectedLines.length != 1)
         return;
 
-      this.solveService.blockDown(this.selectedLines[0]).subscribe(result => {
-        this.loadView();
+      this.solveService.blockDown(this.key, this.selectedLines[0]).subscribe(result => {
+        this.loadView(this.key);
       }, error => {
          console.log(error);
          this.openErrorDialog(error);
        }
      );
+    }
+
+    refreshView() {
+      this.solveService.refresh(this.key).subscribe(result => {
+          this.loadView(this.key);
+        });
     }
 }
 

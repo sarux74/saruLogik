@@ -1,8 +1,7 @@
-package de.sarux.logik.helper.detektor;
+package de.sarux.logik.helper.application.detektor;
 
-import de.sarux.logik.helper.*;
 import de.sarux.logik.helper.application.*;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroup;
 
 import java.util.*;
 

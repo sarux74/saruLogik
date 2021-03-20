@@ -1,4 +1,4 @@
-package de.sarux.logik.helper;
+package de.sarux.logik.helper.application;
 
 public enum LogikRelationType {
     NONE,

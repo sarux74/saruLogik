@@ -17,71 +17,84 @@ export class SolveService {
         this.solveUrl = 'http://localhost:8080/solve/';
       }
 
-      public load(): Observable<LogikView> {
-        return this.http.get<LogikView>(this.solveUrl + 'lines');
+      public load(problemKey: string): Observable<LogikView> {
+        return this.http.get<LogikView>(this.solveUrl + 'problems/' + problemKey +  '/view');
       }
 
-       public updateSelection(lineIndex: number, groupIndex: number, selection: number[]) {
+       public updateSelection(problemKey: string, lineIndex: number, groupIndex: number, selection: number[]) {
          const data = {lineId: lineIndex, groupId: groupIndex, selection: selection};
          console.log(data);
-          return this.http.put<boolean>(this.solveUrl + 'selection', data);
+          return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/selection', data);
        }
 
-       public newBlock(result: any) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'block/new', result);
+       public newBlock(problemKey: string, result: any) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/new', result);
        }
 
-       public flipBlock(blockId: number) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'block/flip', blockId);
+       public flipBlock(problemKey: string, blockId: number) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/flip', blockId);
        }
-       public showBlock(blockId: number) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'block/show', blockId);
+       public showBlock(problemKey: string, blockId: number) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/show', blockId);
        }
-       public hideBlock(blockId: number) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'block/hide', blockId);
-       }
-
-       public findNegatives(lineId: number) : Observable<ChangeResult> {
-              return this.http.put<ChangeResult>(this.solveUrl + 'negative', lineId);
+       public hideBlock(problemKey: string, blockId: number) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/hide', blockId);
        }
 
-       public findPositives(lineIds: number[]) : Observable<ChangeResult> {
-              return this.http.put<ChangeResult>(this.solveUrl + 'positive', lineIds);
+       public findNegatives(problemKey: string, lineId: number) : Observable<ChangeResult> {
+              return this.http.put<ChangeResult>(this.solveUrl + 'problems/' + problemKey + '/negative', lineId);
        }
 
-       public newRelation(result: any) : Observable<boolean> {
-         return this.http.put<boolean>(this.solveUrl + 'relation/new', result);
+       public findPositives(problemKey: string, lineIds: number[]) : Observable<ChangeResult> {
+              return this.http.put<ChangeResult>(this.solveUrl + 'problems/' + problemKey + '/positive', lineIds);
        }
 
-       public loadGroupView(groupId: number) : Observable<LogikViewLine[]> {
+       public newRelation(problemKey: string, result: any) : Observable<boolean> {
+         return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/relation/new', result);
+       }
+
+       public newCase(problemKey: string, lineId1: number, lineId2: number) : Observable<string> {
+          const data = {'line1Id': lineId1, 'line2Id': lineId2};
+          return this.http.put<string>(this.solveUrl + 'problems/' + problemKey + '/case/new', data);
+       }
+
+       public closeCase(problemKey: string) : Observable<string> {
+           return this.http.put<string>(this.solveUrl + 'problems/' + problemKey + '/case/close', null);
+       }
+
+       public loadGroupView(problemKey: string, groupId: number) : Observable<LogikViewLine[]> {
          const opts = { params: new HttpParams({fromString: "groupId=" + groupId}) };
 
-        return this.http.get<LogikViewLine[]>('http://localhost:8080/view/group', opts);
+        return this.http.get<LogikViewLine[]>(this.solveUrl + 'problems/' + problemKey + '/view/group', opts);
       }
 
-      public loadComparableBlocks() : Observable<IdNamePair[]> {
-          return this.http.get<IdNamePair[]>('http://localhost:8080/view/block/comparable');
+      public loadComparableBlocks(problemKey: string) : Observable<IdNamePair[]> {
+          return this.http.get<IdNamePair[]>(this.solveUrl + 'problems/' + problemKey + '/view/block/comparable');
       }
 
-      public loadBlockCompareView(block1Id: number, block2Id: number) : Observable<any> {
+      public loadBlockCompareView(problemKey: string, block1Id: number, block2Id: number) : Observable<any> {
          const opts = { params: new HttpParams({fromString: "blockId1=" + block1Id + "&blockId2=" + block2Id}) };
-         return this.http.get<any>('http://localhost:8080/view/blockcompare', opts);
+         return this.http.get<any>(this.solveUrl + 'problems/' + problemKey + '/view/blockcompare', opts);
       }
 
-      public mergeLines(line1: LogikViewLine, line2: LogikViewLine) : Observable<boolean> {
-         return this.http.put<boolean>(this.solveUrl + 'merge', {line1Id: line1.lineId, line2Id: line2.lineId});
+      public mergeLines(problemKey: string, line1: LogikViewLine, line2: LogikViewLine) : Observable<boolean> {
+         return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/merge', {line1Id: line1.lineId, line2Id: line2.lineId});
        }
 
-       public blockUp(selectedLine: LogikViewLine) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'block/lineup', {blockId: selectedLine.blockId, lineId: selectedLine.lineId});
+       public blockUp(problemKey: string, selectedLine: LogikViewLine) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/lineup', {blockId: selectedLine.blockId, lineId: selectedLine.lineId});
        }
 
-       public blockDown(selectedLine: LogikViewLine) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'block/linedown', {blockId: selectedLine.blockId, lineId: selectedLine.lineId});
+       public blockDown(problemKey: string, selectedLine: LogikViewLine) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/linedown', {blockId: selectedLine.blockId, lineId: selectedLine.lineId});
        }
 
-        public applyBlockingCandidates(groupId: number, selectedLines: number[]) : Observable<boolean> {
-         return this.http.put<boolean>(this.solveUrl + 'blocking_candidates', {groupId: groupId, selectedLines: selectedLines});
-        }
+      public applyBlockingCandidates(problemKey: string, groupId: number, selectedLines: number[]) : Observable<boolean> {
+         return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/blocking_candidates', {groupId: groupId, selectedLines: selectedLines});
+      }
+
+      public refresh(problemKey: string) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/view/refresh', {});
+      }
 
 }

@@ -1,6 +1,6 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.group.LogikGroupsBean;
+import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

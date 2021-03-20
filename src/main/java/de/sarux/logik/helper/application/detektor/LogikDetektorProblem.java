@@ -1,11 +1,11 @@
-package de.sarux.logik.helper.detektor;
+package de.sarux.logik.helper.application.detektor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.sarux.logik.helper.LogikBlock;
-import de.sarux.logik.helper.LogikElement;
-import de.sarux.logik.helper.LogikLine;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.LogikBlock;
+import de.sarux.logik.helper.application.LogikElement;
+import de.sarux.logik.helper.application.LogikLine;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +25,8 @@ public class LogikDetektorProblem {
 
     private List<List<LogikBlock>> possibleCombinations = new ArrayList<>();
 
+    private List<String> blockNames = new ArrayList<>();
+
     public LogikDetektorProblem(final List<LogikGroup> groups) {
         this.groups = groups;
     }
@@ -32,8 +34,8 @@ public class LogikDetektorProblem {
     public LogikBlock newBlock(String name) {
         LogikBlock block = new LogikBlock(trueBlocks.size(), name);
         trueBlocks.add(block);
+        blockNames.add(name);
         return block;
-
     }
 
     public LogikLine newMainLine(LogikBlock block) {
@@ -116,6 +118,7 @@ public class LogikDetektorProblem {
         } else {
             expandCombinations(pair);
         }
+        blockNames.add(blockName);
         return pair;
     }
 
@@ -175,14 +178,12 @@ public class LogikDetektorProblem {
     public void moveLogikBlock(int index, LogikBlock block) {
         blockPairs.remove(index);
 
-        int blockIndex = Integer.parseInt(block.getName().substring(0, block.getName().indexOf(" ")));
+        int blockIndex = findBlockIndex(block.getName());
         int insertIndex = 0;
         for (LogikBlock logikBlock : trueBlocks) {
-            if (logikBlock.getName().matches("[0-9]")) {
-                int compareIndex = Integer.parseInt(logikBlock.getName());
-                if (blockIndex < compareIndex) {
-                    break;
-                }
+            int compareIndex = findBlockIndex(logikBlock.getName());
+            if (blockIndex < compareIndex) {
+                break;
             }
             insertIndex++;
         }
@@ -192,6 +193,22 @@ public class LogikDetektorProblem {
             combination.remove(index);
         }
 
+    }
+
+    private int findBlockIndex(String name) {
+        String shortName = name;
+        if (shortName.endsWith(" wahr"))
+            shortName = shortName.substring(0, shortName.length() - 5);
+        else if (shortName.endsWith(" falsch"))
+            shortName = shortName.substring(0, shortName.length() - 7);
+
+        int index = 0;
+        for (String blockName : blockNames) {
+            if (blockName.equals(shortName))
+                return index;
+            index++;
+        }
+        return -1;
     }
 
     public LineSearchResult searchBlock(Integer blockId) {
@@ -220,5 +237,17 @@ public class LogikDetektorProblem {
             }
         }
         return new LineSearchResult(fromTrue, pairIndex, pairTruth);
+    }
+
+    public void checkBlockNames() {
+        if (blockNames.isEmpty()) {
+            for (LogikBlock logikBlock : trueBlocks)
+                blockNames.add(logikBlock.getName());
+            for (LogikBlockPair pair : blockPairs) {
+                String name = pair.getTrueBlock().getName();
+                name = name.substring(0, name.length() - 5);
+                blockNames.add(name);
+            }
+        }
     }
 }

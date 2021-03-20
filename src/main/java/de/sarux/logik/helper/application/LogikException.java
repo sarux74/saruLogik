@@ -1,4 +1,4 @@
-package de.sarux.logik.helper;
+package de.sarux.logik.helper.application;
 
 public class LogikException extends Throwable {
     public LogikException(String s) {

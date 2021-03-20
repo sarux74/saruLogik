@@ -1,0 +1,76 @@
+<div style="position:sticky; top:0px;right:10px;left:10px;width:100%;background-color:white">
+  <div *ngIf="groups" fxLayout="column" fxLayoutAlign="space-between">
+    <div fxLayout="row" fxLayoutAlign="space-around">
+      <div fxFlex="20">Position:</div>
+      <div fxFlex="30">
+        <mat-form-field>
+          <mat-label>Gruppe</mat-label>
+          <mat-select [(ngModel)]="group1Id" (selectionChange)="updatePositionierer(1)">
+            <mat-option *ngFor="let gruppe of groups1" [value]="gruppe.index">{{gruppe.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div fxFlex="20">Zu positionieren:</div>
+      <div fxFlex="30">
+        <mat-form-field>
+          <mat-label>Gruppe</mat-label>
+          <mat-select [(ngModel)]="group2Id" (selectionChange)="updatePositionierer(2)">
+
+            <mat-option *ngFor="let gruppe of groups2" [value]="gruppe.index">{{gruppe.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="headers" style="padding-top: 50px;z-index:1;">
+    <div>
+      <div fxLayout="row" fxLayoutAlign="space-around">
+        <div fxFlex="6">
+          <button mat-icon-button (click)="addLine(null)"><i
+            class="material-icons">add</i></button>
+          <button mat-icon-button color="primary" aria-label="Übernehmen"
+                  (click)="overtake()">
+            <mat-icon>mediation</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="headers" fxLayout="column" fxLayoutAlign="space-between">
+    <div fxLayout="row" fxLayoutAlign="space-around">
+      <div fxFlex="10">
+      </div>
+      <div [fxFlex]="flexPercent" *ngFor="let in of counter(headers.length) ;let i = index">
+        <div><b>{{headers[i]}}</b></div>
+      </div>
+    </div>
+    <div>
+      <hr/>
+    </div>
+  </div>
+  <div id="content">
+    <div *ngIf="lines && groups" style="padding-top: 50px;z-index:1;">
+      <div *ngFor="let line of lines">
+        <div fxLayout="row" fxLayoutAlign="space-around">
+          <div fxFlex="10">
+            <button mat-icon-button (click)="addLine(line.lineId)"><i
+              class="material-icons">add</i></button>
+
+            <button mat-icon-button (click)="removeLine(line.lineId)"><i
+              class="material-icons">remove</i></button>
+            <button mat-icon-button (click)="copyToLeft(line.lineId)"><i
+              class="material-icons">fast_rewind</i></button>
+            <button mat-icon-button (click)="copyToRight(line.lineId)"><i
+              class="material-icons">fast_forward</i></button>
+          </div>
+          <div [fxFlex]="flexPercent" *ngFor="let in of counter(line.view.length) ;let i = index">
+            <div (click)="editSelection(line.lineId, line.view, i)">{{printViewValue(line.view, i)}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

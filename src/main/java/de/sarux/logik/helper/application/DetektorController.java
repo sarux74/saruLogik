@@ -1,9 +1,8 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.*;
-import de.sarux.logik.helper.detektor.*;
-import de.sarux.logik.helper.group.LogikGroup;
-import de.sarux.logik.helper.group.LogikGroupsBean;
+import de.sarux.logik.helper.application.detektor.*;
+import de.sarux.logik.helper.application.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -171,7 +170,7 @@ public class DetektorController {
     }
 
     @PutMapping("/negative")
-    ChangeResult findNegatives(@RequestBody Integer lineId) throws LogikException {
+    ChangeResult findNegatives(@RequestBody Integer lineId) {
         LogikDetektorProblem problem = detektorBean.getCurrentProblem();
         LogikLine line = problem.getLine(lineId);
         DetektorHelper helper = new DetektorHelper(problem, problemViewBean.getView(DETEKTOR_VIEW_NAME));
@@ -235,13 +234,16 @@ public class DetektorController {
             copyBlock(problemBean, (result.isPairTruth()) ? pair.getTrueBlock() : pair.getFalseBlock());
         }
 
-        problemViewBean.buildProblemView(problemBean.getCurrentProblem());
+        // TODO: Key
+        problemViewBean.buildProblemView(problemBean.getProblem("solve0"));
     }
 
     @PutMapping("/exclude")
     public ChangeResult exclude(@RequestBody List<Integer> blockIds) throws LogikException {
         LogikDetektorProblem problem = detektorBean.getCurrentProblem();
 
+        // For compatibility with older problems
+        problem.checkBlockNames();
         List<LineSearchResult> results = new ArrayList<>();
         for (Integer blockId : blockIds) {
             results.add(problem.searchBlock(blockId));
@@ -308,10 +310,12 @@ public class DetektorController {
 
     private void copyBlock(ProblemBean problem, LogikBlock block) {
         Map<LogikLine, LogikLine> copiedLines = new HashMap<>();
-        LogikBlock copiedBLock = problem.getCurrentProblem().newBlock(block.getName());
+        // TODO
+        LogikBlock copiedBLock = problemBean.getProblem("solve0").newBlock(block.getName());
         for (LogikLine line : block.getMainLines()) {
             if (!copiedLines.containsKey(line)) {
-                LogikLine logikLine = problem.getCurrentProblem().newMainLine(copiedBLock);
+                // TODO
+                LogikLine logikLine = problemBean.getProblem("solve0").newMainLine(copiedBLock);
                 logikLine.copyFrom(line);
                 copiedLines.put(line, logikLine);
             } else {
@@ -321,7 +325,8 @@ public class DetektorController {
 
         for (LogikLine line : block.getSubLines()) {
             if (!copiedLines.containsKey(line)) {
-                LogikLine logikLine = problem.getCurrentProblem().newSubLine(copiedBLock);
+                // TODO
+                LogikLine logikLine = problemBean.getProblem("solve0").newSubLine(copiedBLock);
                 logikLine.copyFrom(line);
                 copiedLines.put(line, logikLine);
             } else {

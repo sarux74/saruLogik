@@ -1,6 +1,6 @@
-package de.sarux.logik.helper.group;
+package de.sarux.logik.helper.application.group;
 
-import de.sarux.logik.helper.LogikElement;
+import de.sarux.logik.helper.application.LogikElement;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 

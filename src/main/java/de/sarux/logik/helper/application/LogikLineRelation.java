@@ -1,6 +1,6 @@
-package de.sarux.logik.helper;
+package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

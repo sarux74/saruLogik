@@ -6,6 +6,7 @@ import {ValueView} from '../solve/model/value-view';
 import {MatDialog} from '@angular/material/dialog';
 import { SolveService } from '../solve/solve.service';
 import { GroupService } from '../group/group.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-compact-view',
@@ -19,18 +20,25 @@ export class CompactViewComponent implements OnInit {
     lines: LogikViewLine[];
     flexPercent: number;
 
-    constructor(private groupService: GroupService,private solveService: SolveService, public dialog: MatDialog) { }
+  key: string;
+  private sub: any;
+
+    constructor(private groupService: GroupService,private solveService: SolveService, public dialog: MatDialog, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
       this.groupService.current().subscribe(data => {
         this.groups = data;
         this.flexPercent = Math.floor(98 / this.groups.length);
       });
-      this.loadView(-1);
+      this.sub = this.route.params.subscribe(params => {
+                         this.key = params['problem'];
+                         this.loadView(-1);
+                    });
+
     }
 
     loadView(index: number) {
-      this.solveService.load().subscribe(data => {
+      this.solveService.load(this.key).subscribe(data => {
         this.lines = this.filter(data, index);
        });
     }

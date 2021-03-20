@@ -4,12 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import de.sarux.logik.helper.LogikException;
 import de.sarux.logik.helper.LogikProblem;
-import de.sarux.logik.helper.application.ProblemBean;
-import de.sarux.logik.helper.detektor.DetektorBean;
-import de.sarux.logik.helper.detektor.LogikDetektorProblem;
-import de.sarux.logik.helper.group.LogikGroupsBean;
+import de.sarux.logik.helper.application.detektor.DetektorBean;
+import de.sarux.logik.helper.application.detektor.LogikDetektorProblem;
+import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -56,10 +54,11 @@ public class LogikProblemIoController {
 
         String exportedContent;
         // First check if detektor
-        if (detektorBean.getCurrentProblem() != null && !detektorBean.getCurrentProblem().isEmpty()) {
+        if (detektorBean.getCurrentProblem() != null) {
             exportedContent = objectMapper.writeValueAsString(detektorBean.getCurrentProblem());
         } else {
-            exportedContent = objectMapper.writeValueAsString(problemBean.getCurrentProblem());
+            // TODO
+            exportedContent = objectMapper.writeValueAsString(problemBean.getProblem("solve0"));
         }
 
         String filename = "problem.json"; // Ignored?
@@ -71,8 +70,8 @@ public class LogikProblemIoController {
 
     @PostMapping("problem/load")
     public int handleFileUpload(@RequestParam("file") MultipartFile file,
-                                    RedirectAttributes redirectAttributes) throws LogikException {
-        int problemType = 0;
+                                RedirectAttributes redirectAttributes) throws LogikException {
+        int problemType;
         try {
             InputStream inputStream = file.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
@@ -85,7 +84,7 @@ public class LogikProblemIoController {
             Class<?> cls;
             if (typeNode == null || typeNode.asText() == null) {
                 cls = LogikProblem.class;
-                ((ObjectNode)jsonNode).put("@type", LogikProblem.class.getName());
+                ((ObjectNode) jsonNode).put("@type", LogikProblem.class.getName());
             } else {
                 cls = Class.forName(typeNode.asText());
             }

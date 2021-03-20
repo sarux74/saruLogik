@@ -1,8 +1,8 @@
-package de.sarux.logik.helper;
+package de.sarux.logik.helper.application;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,5 +56,6 @@ public class LogikLine {
             List<LogikElement> copiedElements = new ArrayList<>(elementList);
             selectableElements.add(copiedElements);
         }
+        lineId = line.getLineId();
     }
 }

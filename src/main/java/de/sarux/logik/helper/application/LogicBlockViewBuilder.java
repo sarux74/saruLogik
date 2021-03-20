@@ -1,7 +1,6 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.*;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroup;
 
 import java.util.ArrayList;
 import java.util.List;

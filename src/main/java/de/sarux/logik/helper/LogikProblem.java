@@ -1,7 +1,11 @@
 package de.sarux.logik.helper;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.LogikBlock;
+import de.sarux.logik.helper.application.LogikElement;
+import de.sarux.logik.helper.application.LogikLine;
+import de.sarux.logik.helper.application.group.LogikGroup;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -15,6 +19,14 @@ public class LogikProblem {
     private List<LogikGroup> groups;
     private List<LogikBlock> blocks = new ArrayList<>();
     private List<LogikLine> lines = new ArrayList<>();
+
+    // For case
+    @Getter
+    private String parentProblemKey;
+    @Getter
+    private int line1Id;
+    @Getter
+    private int line2Id;
 
     public LogikProblem(List<LogikGroup> groups) {
         this.groups = groups;
@@ -117,5 +129,11 @@ public class LogikProblem {
         for (LogikBlock block : blocks) {
             block.replaceLines(findLine, duplicates);
         }
+    }
+
+    public void setCaseData(String parentProblemKey, int line1Id, int line2Id) {
+        this.parentProblemKey = parentProblemKey;
+        this.line1Id = line1Id;
+        this.line2Id = line2Id;
     }
 }

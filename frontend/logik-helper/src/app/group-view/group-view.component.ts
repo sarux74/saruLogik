@@ -3,6 +3,7 @@ import {SolveService} from '../solve/solve.service';
 import {GroupService} from '../group/group.service';
 import {LogikGroup} from '../group/model/logik-group';
 import {LogikViewLine} from '../solve/model/logik-view-line';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-group-view',
@@ -18,7 +19,10 @@ export class GroupViewComponent implements OnInit {
   lines: LogikViewLine[];
   selectedLines: boolean[] = [];
 
-  constructor(private solveService: SolveService, private groupService: GroupService) { }
+  key: string;
+  private sub: any;
+
+  constructor(private solveService: SolveService, private groupService: GroupService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.groupService.current().subscribe(data => {
@@ -26,6 +30,9 @@ export class GroupViewComponent implements OnInit {
         this.flexPercent = Math.floor(98 / this.groups.length);
         console.log(this.flexPercent);
     });
+    this.sub = this.route.params.subscribe(params => {
+                   this.key = params['problem'];
+              });
   }
 
   counter(i: number) {
@@ -57,7 +64,7 @@ export class GroupViewComponent implements OnInit {
       }
     }
     this.sortedGroups = prepareSortedGroups;
-    this.solveService.loadGroupView(this.groupId).subscribe(res => {
+    this.solveService.loadGroupView(this.key, this.groupId).subscribe(res => {
       console.log(res);
       this.lines = res;
       const newSelectedLines = [];
@@ -76,6 +83,6 @@ export class GroupViewComponent implements OnInit {
       candidates.push(i);
     }
     console.log(candidates);
-    this.solveService.applyBlockingCandidates(this.groupId, candidates).subscribe(res => {if(res) this.loadGroupView(); });
+    this.solveService.applyBlockingCandidates(this.key, this.groupId, candidates).subscribe(res => {if(res) this.loadGroupView(); });
   }
 }
