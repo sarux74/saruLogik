@@ -1,7 +1,7 @@
-import { CombinationView } from './combination-view';
+import {CombinationView} from './combination-view';
 
 describe('CombinationView', () => {
-  it('should create an instance', () => {
-    expect(new CombinationView()).toBeTruthy();
-  });
+    it('should create an instance', () => {
+        expect(new CombinationView()).toBeTruthy();
+    });
 });

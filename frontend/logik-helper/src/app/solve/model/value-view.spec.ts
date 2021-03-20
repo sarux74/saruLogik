@@ -1,7 +1,7 @@
-import { ValueView } from './value-view';
+import {ValueView} from './value-view';
 
 describe('ValueView', () => {
-  it('should create an instance', () => {
-    expect(new ValueView()).toBeTruthy();
-  });
+    it('should create an instance', () => {
+        expect(new ValueView()).toBeTruthy();
+    });
 });

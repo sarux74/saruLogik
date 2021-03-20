@@ -1,5 +1,5 @@
 export class CombinationView {
 
-  blockIds: string[];
-  truths: boolean[][];
+    blockIds: string[];
+    truths: boolean[][];
 }
