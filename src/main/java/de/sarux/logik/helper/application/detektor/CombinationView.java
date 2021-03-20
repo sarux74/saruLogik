@@ -1,4 +1,4 @@
-package de.sarux.logik.helper.detektor;
+package de.sarux.logik.helper.application.detektor;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

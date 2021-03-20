@@ -41,16 +41,16 @@ export class BlockCompareViewComponent implements OnInit {
         console.log(this.flexPercent);
     });
 
-this.sub = this.route.params.subscribe(params => {
-               this.key = params['problem']; // (+) converts string 'id' to a number
-            this.solveService.loadComparableBlocks(this.key).subscribe(data => {
-                    this.blocks = data;
-                    this.blocks1 = data;
-                    this.blocks2 = data;
-                })
+    this.sub = this.route.params.subscribe(params => {
+      this.key = params['problem']; // (+) converts string 'id' to a number
+      this.solveService.loadComparableBlocks(this.key).subscribe(data => {
+              this.blocks = data;
+              this.blocks1 = data;
+              this.blocks2 = data;
+          })
 
-               // In a real app: dispatch action to load the details here.
-          });
+         // In a real app: dispatch action to load the details here.
+    });
 
   }
 

@@ -1,6 +1,6 @@
 package de.sarux.logik.helper.application.error;
 
-import de.sarux.logik.helper.LogikException;
+import de.sarux.logik.helper.application.LogikException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
-package de.sarux.logik.helper;
+package de.sarux.logik.helper.application;
 
 import com.fasterxml.jackson.annotation.*;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,7 +1,6 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.*;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -234,6 +233,16 @@ public class LogicBlockView {
             int insertIndex = lines.indexOf(addLineLine.get());
             final LogicBlockViewLine subMainLine = LogicBlockViewBuilder.buildLineViewLine(groups, block, newLine);
             lines.add(insertIndex, subMainLine);
+        }
+    }
+
+    public void refresh(List<LogikGroup> groups, List<LogikBlock> blocks) throws LogikException {
+        for(LogikBlock block: blocks) {
+            Optional<LogicBlockViewLine> blockLine = lines.stream().filter(l -> l.getBlockId() == block.getBlockId() && l.getType() == ViewLineType.BLOCK).findFirst();
+            if (blockLine.isPresent() && !blockLine.get().isHideSub()) {
+                hideBlock(block);
+                showBlock(groups, block);
+            }
         }
     }
 }

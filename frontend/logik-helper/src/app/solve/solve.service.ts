@@ -89,8 +89,12 @@ export class SolveService {
         return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/linedown', {blockId: selectedLine.blockId, lineId: selectedLine.lineId});
        }
 
-        public applyBlockingCandidates(problemKey: string, groupId: number, selectedLines: number[]) : Observable<boolean> {
+      public applyBlockingCandidates(problemKey: string, groupId: number, selectedLines: number[]) : Observable<boolean> {
          return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/blocking_candidates', {groupId: groupId, selectedLines: selectedLines});
-        }
+      }
+
+      public refresh(problemKey: string) : Observable<boolean> {
+        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/view/refresh', {});
+      }
 
 }

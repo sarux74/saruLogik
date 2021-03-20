@@ -1,8 +1,8 @@
-package de.sarux.logik.helper.group;
+package de.sarux.logik.helper.application.group;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import de.sarux.logik.helper.LogikElement;
+import de.sarux.logik.helper.application.LogikElement;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

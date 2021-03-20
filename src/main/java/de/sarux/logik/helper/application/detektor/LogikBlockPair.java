@@ -1,6 +1,6 @@
-package de.sarux.logik.helper.detektor;
+package de.sarux.logik.helper.application.detektor;
 
-import de.sarux.logik.helper.LogikBlock;
+import de.sarux.logik.helper.application.LogikBlock;
 import lombok.Getter;
 
 @Getter

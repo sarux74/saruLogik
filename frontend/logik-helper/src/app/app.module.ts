@@ -32,6 +32,7 @@ import { ErrorDialog } from './dialog/error-dialog/error-dialog.component';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import { MultipleRelationViewComponent } from './multiple-relation-view/multiple-relation-view.component';
 import { CombinationViewComponent } from './combination-view/combination-view.component';
+import { PositionerComponent } from './positioner/positioner.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { CombinationViewComponent } from './combination-view/combination-view.co
     BlockCompareViewComponent,
     ErrorDialog,
     MultipleRelationViewComponent,
-    CombinationViewComponent
+    CombinationViewComponent,
+    PositionerComponent
   ],
   imports: [
     BrowserModule,

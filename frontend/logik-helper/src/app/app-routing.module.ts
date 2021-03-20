@@ -8,6 +8,7 @@ import { GroupViewComponent } from './group-view/group-view.component';
 import { BlockCompareViewComponent } from './block-compare-view/block-compare-view.component';
 import { MultipleRelationViewComponent } from './multiple-relation-view/multiple-relation-view.component';
 import { CombinationViewComponent } from './combination-view/combination-view.component';
+import { PositionerComponent } from './positioner/positioner.component';
 
 const routes: Routes = [
   { path: 'group', component: GroupComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'view/block', component: BlockCompareViewComponent },
    { path: 'view/multiple', component: MultipleRelationViewComponent },
    { path: 'view/combination', component: CombinationViewComponent },
+   { path: 'view/positioner', component: PositionerComponent },
   { path: '**', component: GroupComponent },
 ];
 

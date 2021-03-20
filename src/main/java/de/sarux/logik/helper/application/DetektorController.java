@@ -1,9 +1,8 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.*;
-import de.sarux.logik.helper.detektor.*;
-import de.sarux.logik.helper.group.LogikGroup;
-import de.sarux.logik.helper.group.LogikGroupsBean;
+import de.sarux.logik.helper.application.detektor.*;
+import de.sarux.logik.helper.application.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

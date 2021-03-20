@@ -33,7 +33,7 @@ export class SolveComponent implements OnInit {
   key: string;
   private sub: any;
 
-  constructor(private groupService: GroupService,private solveService: SolveService, public dialog: MatDialog, private router: Router,
+  constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog, private router: Router,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -216,7 +216,8 @@ export class SolveComponent implements OnInit {
       return;
     this.solveService.findNegatives(this.key, this.selectedLines[0].lineId).subscribe(result => {
       if(result) {
-        this.markedLines = result.changedLines;
+        this.mergeMarkedLines(result.changedLines, this.selectedLines[0].lineId);
+        // this.markedLines = result.changedLines;
         const dialogRef = this.dialog.open(ShowChangesDialog, {
               width: '400px',
                data: result
@@ -233,6 +234,28 @@ export class SolveComponent implements OnInit {
       });
   }
 
+  mergeMarkedLines(newLines: number[], exceptedLine: number) {
+    const mergedLines = [];
+    for(const lineId of this.markedLines) {
+      if (lineId != exceptedLine)
+        mergedLines.push(lineId);
+    }
+    for(const lineId of newLines) {
+      let found = false;
+      for(const checkLineId of mergedLines) {
+        if (checkLineId == lineId) {
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+        mergedLines.push(lineId);
+    }
+    mergedLines.sort();
+
+    this.markedLines = mergedLines;
+  }
+
   findPositives() {
     if(this.selectedLines.length == 0)
       return;
@@ -244,7 +267,8 @@ export class SolveComponent implements OnInit {
     this.solveService.findPositives(this.key, ids).subscribe(result => {
       console.log(result);
       if(result) {
-        this.markedLines = result.changedLines;
+        this.mergeMarkedLines(result.changedLines, this.selectedLines[0].lineId);
+        //this.markedLines = result.changedLines;
         const dialogRef = this.dialog.open(ShowChangesDialog, {
                 width: '400px',
                  data: result
@@ -329,6 +353,14 @@ console.log(rightLineId);
         window.open(url, '_blank');
     }
 
+      openPositioner() {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree(['/view/positioner', {'problem' : this.key}])
+          );
+
+          window.open(url, '_blank');
+      }
+
     blockUp() {
      if(this.selectedLines.length != 1)
           return;
@@ -353,6 +385,12 @@ console.log(rightLineId);
          this.openErrorDialog(error);
        }
      );
+    }
+
+    refreshView() {
+      this.solveService.refresh(this.key).subscribe(result => {
+          this.loadView(this.key);
+        });
     }
 }
 

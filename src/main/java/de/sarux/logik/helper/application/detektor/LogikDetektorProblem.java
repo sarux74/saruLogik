@@ -1,11 +1,11 @@
-package de.sarux.logik.helper.detektor;
+package de.sarux.logik.helper.application.detektor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.sarux.logik.helper.LogikBlock;
-import de.sarux.logik.helper.LogikElement;
-import de.sarux.logik.helper.LogikLine;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.LogikBlock;
+import de.sarux.logik.helper.application.LogikElement;
+import de.sarux.logik.helper.application.LogikLine;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

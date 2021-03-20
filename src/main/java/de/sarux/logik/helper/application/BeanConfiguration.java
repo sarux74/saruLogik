@@ -1,9 +1,7 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.LogikProblem;
-import de.sarux.logik.helper.detektor.DetektorBean;
-import de.sarux.logik.helper.detektor.LogikDetektorProblem;
-import de.sarux.logik.helper.group.LogikGroupsBean;
+import de.sarux.logik.helper.application.detektor.DetektorBean;
+import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

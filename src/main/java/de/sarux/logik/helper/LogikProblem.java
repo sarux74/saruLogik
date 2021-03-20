@@ -1,7 +1,10 @@
 package de.sarux.logik.helper;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.LogikBlock;
+import de.sarux.logik.helper.application.LogikElement;
+import de.sarux.logik.helper.application.LogikLine;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,8 +1,7 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.LogikException;
 import de.sarux.logik.helper.LogikProblem;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -11,7 +10,7 @@ import java.util.Map;
 
 @Component
 public class ProblemBean {
-    private Map<String, LogikProblem> problems = new HashMap<>();
+    private final Map<String, LogikProblem> problems = new HashMap<>();
 
     private int keyCounter = 0;
 

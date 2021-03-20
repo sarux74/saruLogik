@@ -1,11 +1,7 @@
 package de.sarux.logik.helper.application;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import de.sarux.logik.helper.LogikBlock;
-import de.sarux.logik.helper.LogikElement;
 import de.sarux.logik.helper.LogikProblem;
-import de.sarux.logik.helper.group.LogikGroup;
-import de.sarux.logik.helper.LogikLine;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +29,7 @@ public class LogikProblemViewController {
     private final ProblemBean problemBean;
 
     @GetMapping(path = "/problems/{problemKey}/view/group")
-    public List<LogicBlockViewLine> getBuildViewGroup(@PathVariable String problemKey, @RequestParam(name = "groupId") Integer groupId) throws JsonProcessingException {
+    public List<LogicBlockViewLine> getBuildViewGroup(@PathVariable String problemKey, @RequestParam(name = "groupId") Integer groupId) {
         String problemName = SOLVE_VIEW_NAME + problemKey;
         LogikProblem problem = problemBean.getProblem(problemName);
         LogicBlockView view = problemViewBean.getView(problemName);
@@ -60,7 +56,7 @@ public class LogikProblemViewController {
     }
 
     @GetMapping(path = "/problems/{problemKey}/view/blockcompare")
-    public BlockCompareView getBlockCompareView(@PathVariable String problemKey, @RequestParam(name = "blockId1") Integer blockId1, @RequestParam(name = "blockId2") Integer blockId2) throws JsonProcessingException {
+    public BlockCompareView getBlockCompareView(@PathVariable String problemKey, @RequestParam(name = "blockId1") Integer blockId1, @RequestParam(name = "blockId2") Integer blockId2) {
 
         String problemName = SOLVE_VIEW_NAME + problemKey;
         LogikProblem problem = problemBean.getProblem(problemName);
@@ -154,6 +150,15 @@ public class LogikProblemViewController {
 
         MultipleRelationBuilder multipleRelationBuilder = new MultipleRelationBuilder(problem);
         return multipleRelationBuilder.build();
+    }
+
+    @PutMapping(path = "/problems/{problemKey}/view/refresh")
+    public boolean refreshView(@PathVariable String problemKey) throws LogikException {
+        String problemName = SOLVE_VIEW_NAME + problemKey;
+        LogikProblem problem = problemBean.getProblem(problemName);
+        LogicBlockView view = problemViewBean.getView(problemName);
+        view.refresh(problem.getGroups(), problem.getBlocks());
+        return true;
     }
 
 }

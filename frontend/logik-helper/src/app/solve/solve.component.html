@@ -11,21 +11,23 @@
             [url]="'http://localhost:8080/problem/save'"
             [header]="{ token: 'logik' }">Speichern
     </button>
+    <button mat-icon-button color="secondary" aria-label="Aktualisieren"
+            (click)="refreshView()">
+      <mat-icon>refresh</mat-icon>
+    </button>
     Ansichten:
     <button (click)="openCompactView()">Kompakte Ansicht</button>
     <button (click)="openGroupView()">Gruppen-Ansicht</button>
     <button (click)="openBlockCompareView()">Blockvergleich</button>
     <button (click)="openMultipleRelationView()">Mehrfach-Beziehungen</button>
+    <button (click)="openPositioner()">Positionieren</button>
+    <button [disabled]="selectedLines.length !== 2" (click)="newCase()">Fallunterscheidung</button>
+    <button *ngIf="isCase()" (click)="closeCase()">Fall ausschließen</button>
     <div *ngIf="showEditButtons">
       Verschieben:
       <button [disabled]="selectedLines.length == 0" (click)="blockUp()">Up</button>
       <button [disabled]="selectedLines.length == 0" (click)="blockDown()">Down</button>
     </div>
-    <div>
-      <button [disabled]="selectedLines.length !== 2" (click)="newCase()">Fallunterscheidung</button>
-      <button *ngIf="isCase()" (click)="closeCase()">Fall ausschließen</button>
-    </div>
-
   </div>
   <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">
     <div fxLayout="row" fxLayoutAlign="space-around">
@@ -93,6 +95,15 @@
           </div>
           <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
             <div (dblclick)="editRelation(line, i)">{{printViewValue(line, i)}}</div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'RELATION_LOWER'" fxLayout="row" fxLayoutAlign="space-around">
+          <div fxFlex="6">
+
+          </div>
+          <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+            <div>{{printViewValue(line, i)}}</div>
           </div>
         </div>
 

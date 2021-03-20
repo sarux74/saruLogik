@@ -1,10 +1,8 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.LogikBlock;
-import de.sarux.logik.helper.LogikException;
 import de.sarux.logik.helper.LogikProblem;
-import de.sarux.logik.helper.detektor.LogikDetektorProblem;
-import de.sarux.logik.helper.group.LogikGroup;
+import de.sarux.logik.helper.application.detektor.LogikDetektorProblem;
+import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
