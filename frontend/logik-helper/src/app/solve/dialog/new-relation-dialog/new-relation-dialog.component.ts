@@ -8,7 +8,7 @@ import {FormControl} from '@angular/forms';
     templateUrl: './new-relation-dialog.component.html',
     styleUrls: ['./new-relation-dialog.component.css']
 })
-export class NewRelationDialog implements OnInit {
+export class NewRelationDialogComponent implements OnInit {
     groupFrom = new FormControl();
     relationType = new FormControl('NONE');
     relationHint = new FormControl();
@@ -27,8 +27,8 @@ export class NewRelationDialog implements OnInit {
         {id: 'NOT_EQUAL', name: 'ungleich'}
     ];
 
-    constructor(public dialogRef: MatDialogRef<NewRelationDialog>,
-        @Inject(MAT_DIALOG_DATA) public data: any) {}
+    constructor(public dialogRef: MatDialogRef<NewRelationDialogComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any) {}
 
     ngOnInit(): void {
     }
@@ -38,7 +38,11 @@ export class NewRelationDialog implements OnInit {
     }
 
     buildResult(): any {
-        return {blockId: this.data.blockId, leftLineId: this.data.leftLineId, rightLineId: this.data.rightLineId, groupFrom: this.groupFrom.value, groupTo: this.groupTo.value, relationType: this.relationType.value, relationHint: this.relationHint.value, subLine: this.subLine.value}
+        return {
+            blockId: this.data.blockId, leftLineId: this.data.leftLineId, rightLineId: this.data.rightLineId,
+            groupFrom: this.groupFrom.value, groupTo: this.groupTo.value, relationType: this.relationType.value,
+            relationHint: this.relationHint.value, subLine: this.subLine.value
+        };
     }
 
 }

@@ -17,18 +17,18 @@ import {MatInputModule} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SolveComponent} from './solve/solve.component';
 import {DetektorComponent} from './detektor/detektor.component';
-import {ValueSelectDialog} from './solve/dialog/value-select-dialog/value-select-dialog.component';
-import {NewBlockDialog} from './solve/dialog/new-block-dialog/new-block-dialog.component';
-import {NewRelationDialog} from './solve/dialog/new-relation-dialog/new-relation-dialog.component';
+import {ValueSelectDialogComponent} from './solve/dialog/value-select-dialog/value-select-dialog.component';
+import {NewBlockDialogComponent} from './solve/dialog/new-block-dialog/new-block-dialog.component';
+import {NewRelationDialogComponent} from './solve/dialog/new-relation-dialog/new-relation-dialog.component';
 import {MatSelectModule} from '@angular/material/select';
 import {CompactViewComponent} from './compact-view/compact-view.component';
 import {GroupViewComponent} from './group-view/group-view.component';
 import {ChainViewComponent} from './chain-view/chain-view.component';
 import {FileSaverModule} from 'ngx-filesaver';
-import {ShowChangesDialog} from './solve/dialog/show-changes/show-changes.component';
-import {GroupEditDialog} from './group/dialog/group-edit-dialog.component';
+import {ShowChangesDialogComponent} from './solve/dialog/show-changes/show-changes.component';
+import {GroupEditDialogComponent} from './group/dialog/group-edit-dialog.component';
 import {BlockCompareViewComponent} from './block-compare-view/block-compare-view.component';
-import {ErrorDialog} from './dialog/error-dialog/error-dialog.component';
+import {ErrorDialogComponent} from './dialog/error-dialog/error-dialog.component';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {MultipleRelationViewComponent} from './multiple-relation-view/multiple-relation-view.component';
 import {CombinationViewComponent} from './combination-view/combination-view.component';
@@ -38,18 +38,18 @@ import {PositionerComponent} from './positioner/positioner.component';
     declarations: [
         AppComponent,
         GroupComponent,
-        GroupEditDialog,
+        GroupEditDialogComponent,
         SolveComponent,
         DetektorComponent,
-        ValueSelectDialog,
-        NewBlockDialog,
-        NewRelationDialog,
+        ValueSelectDialogComponent,
+        NewBlockDialogComponent,
+        NewRelationDialogComponent,
         CompactViewComponent,
         GroupViewComponent,
         ChainViewComponent,
-        ShowChangesDialog,
+        ShowChangesDialogComponent,
         BlockCompareViewComponent,
-        ErrorDialog,
+        ErrorDialogComponent,
         MultipleRelationViewComponent,
         CombinationViewComponent,
         PositionerComponent

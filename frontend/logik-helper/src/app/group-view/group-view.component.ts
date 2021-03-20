@@ -28,10 +28,10 @@ export class GroupViewComponent implements OnInit {
         this.groupService.current().subscribe(data => {
             this.groups = data;
             this.flexPercent = Math.floor(98 / this.groups.length);
-            console.log(this.flexPercent);
         });
         this.sub = this.route.params.subscribe(params => {
-            this.key = params['problem'];
+            const key = 'problem';
+            this.key = params[key];
         });
     }
 
@@ -40,35 +40,34 @@ export class GroupViewComponent implements OnInit {
     }
 
     printViewValue(line: LogikViewLine, index: number): string {
-        if (!line.view || line.view.length <= index)
+        if (!line.view || line.view.length <= index) {
             return '';
+        }
 
         const value = line.view[index];
-        if (!value) return '';
-        else return value.text;
+        return (!value) ? '' : value.text;
     }
 
     loadGroupView() {
         // Resort groups
         const prepareSortedGroups = [];
-        for (let group of this.groups) {
-            if (group.index == this.groupId) {
+        for (const group of this.groups) {
+            if (group.index === this.groupId) {
                 prepareSortedGroups.push(group);
                 break;
             }
         }
 
-        for (let group of this.groups) {
-            if (group.index != this.groupId) {
+        for (const group of this.groups) {
+            if (group.index !== this.groupId) {
                 prepareSortedGroups.push(group);
             }
         }
         this.sortedGroups = prepareSortedGroups;
         this.solveService.loadGroupView(this.key, this.groupId).subscribe(res => {
-            console.log(res);
             this.lines = res;
             const newSelectedLines = [];
-            for (let i = 0; i < this.lines.length; i++) {
+            for (const _ of this.lines) {
                 newSelectedLines.push(false);
             }
             this.selectedLines = newSelectedLines;
@@ -79,10 +78,15 @@ export class GroupViewComponent implements OnInit {
         console.log(this.selectedLines);
         const candidates = [];
         for (let i = 0; i < this.selectedLines.length; i++) {
-            if (this.selectedLines[i] === true)
+            if (this.selectedLines[i] === true) {
                 candidates.push(i);
+            }
         }
         console.log(candidates);
-        this.solveService.applyBlockingCandidates(this.key, this.groupId, candidates).subscribe(res => {if (res) this.loadGroupView();});
+        this.solveService.applyBlockingCandidates(this.key, this.groupId, candidates).subscribe(res => {
+            if (res) {
+                this.loadGroupView();
+            }
+        });
     }
 }

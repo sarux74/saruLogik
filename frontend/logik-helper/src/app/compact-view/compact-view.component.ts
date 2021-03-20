@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {LogikGroup} from '../group/model/logik-group';
 import {LogikView} from '../solve/model/logik-view';
 import {LogikViewLine} from '../solve/model/logik-view-line';
-import {ValueView} from '../solve/model/value-view';
 import {MatDialog} from '@angular/material/dialog';
 import {SolveService} from '../solve/solve.service';
 import {GroupService} from '../group/group.service';
@@ -23,7 +22,8 @@ export class CompactViewComponent implements OnInit {
     key: string;
     private sub: any;
 
-    constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog, private route: ActivatedRoute) {}
+    constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog,
+                private route: ActivatedRoute) {}
 
     ngOnInit(): void {
         this.groupService.current().subscribe(data => {
@@ -31,7 +31,8 @@ export class CompactViewComponent implements OnInit {
             this.flexPercent = Math.floor(98 / this.groups.length);
         });
         this.sub = this.route.params.subscribe(params => {
-            this.key = params['problem'];
+            const key = 'problem';
+            this.key = params[key];
             this.loadView(-1);
         });
 
@@ -48,34 +49,34 @@ export class CompactViewComponent implements OnInit {
     }
 
     printViewValue(line: LogikViewLine, index: number): string {
-        if (!line.view || line.view.length <= index)
+        if (!line.view || line.view.length <= index) {
             return '';
+        }
 
         const value = line.view[index];
-        if (!value) return '';
-        else return value.text;
+        return (!value) ? '' : value.text;
     }
 
     filter(view: LogikView, index: number): LogikViewLine[] {
         const compact = [];
         const indices = [];
-        for (let line of view.lines) {
+        for (const line of view.lines) {
             if (line.type === 'LINE' || line.type === 'SUBLINE') {
-                if (indices.indexOf(line.lineId) == -1) {
+                if (indices.indexOf(line.lineId) === -1) {
                     compact.push(line);
                     indices.push(line.lineId);
                 }
             }
         }
 
-        if (index == -1)
+        if (index === -1) {
             compact.sort((a, b) => (a.lineId > b.lineId) ? 1 : ((b.lineId > a.lineId) ? -1 : 0));
-        else
+        } else {
             compact.sort((a, b) => {
                 const sizeDiff = a.view[index].selectableValues.length - b.view[index].selectableValues.length;
-                if (sizeDiff != 0) return sizeDiff;
-                else return a.view[index].text.localeCompare(b.view[index].text);
+                return (sizeDiff !== 0) ? sizeDiff : a.view[index].text.localeCompare(b.view[index].text);
             });
+        }
         return compact;
     }
 }

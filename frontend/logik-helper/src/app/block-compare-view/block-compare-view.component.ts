@@ -4,7 +4,7 @@ import {GroupService} from '../group/group.service';
 import {LogikGroup} from '../group/model/logik-group';
 import {LogikViewLine} from '../solve/model/logik-view-line';
 import {IdNamePair} from './id-name-pair';
-import {ErrorDialog} from '../dialog/error-dialog/error-dialog.component';
+import {ErrorDialogComponent} from '../dialog/error-dialog/error-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 
@@ -32,7 +32,8 @@ export class BlockCompareViewComponent implements OnInit {
     key: string;
     private sub: any;
 
-    constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog, private route: ActivatedRoute) {}
+    constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog,
+                private route: ActivatedRoute) {}
 
     ngOnInit(): void {
         this.groupService.current().subscribe(data => {
@@ -42,12 +43,13 @@ export class BlockCompareViewComponent implements OnInit {
         });
 
         this.sub = this.route.params.subscribe(params => {
-            this.key = params['problem']; // (+) converts string 'id' to a number
+            const key = 'problem';
+            this.key = params[key]; // (+) converts string 'id' to a number
             this.solveService.loadComparableBlocks(this.key).subscribe(data => {
                 this.blocks = data;
                 this.blocks1 = data;
                 this.blocks2 = data;
-            })
+            });
 
             // In a real app: dispatch action to load the details here.
         });
@@ -56,9 +58,10 @@ export class BlockCompareViewComponent implements OnInit {
 
     selectBlock2List() {
         const block2Prep = [];
-        for (let id of this.blocks) {
-            if (id.id !== this.block1Id)
+        for (const id of this.blocks) {
+            if (id.id !== this.block1Id) {
                 block2Prep.push(id);
+            }
         }
         this.blocks2 = block2Prep;
     }
@@ -67,16 +70,18 @@ export class BlockCompareViewComponent implements OnInit {
         console.log('Aufruf update');
         if (index === 1) {
             const block2Prep = [];
-            for (let id of this.blocks) {
-                if (id.id !== this.block1Id)
+            for (const id of this.blocks) {
+                if (id.id !== this.block1Id) {
                     block2Prep.push(id);
+                }
             }
             this.blocks2 = block2Prep;
         } else if (index === 2) {
             const block1Prep = [];
-            for (let id of this.blocks) {
-                if (id.id !== this.block2Id)
+            for (const id of this.blocks) {
+                if (id.id !== this.block2Id) {
                     block1Prep.push(id);
+                }
             }
             this.blocks1 = block1Prep;
         }
@@ -92,7 +97,9 @@ export class BlockCompareViewComponent implements OnInit {
                 this.block1LineIds = data.block1LineIds;
                 this.block2LineIds = data.block2LineIds;
                 this.proposed = data.proposed;
-            }, error => {console.log(error);});
+            }, error => {
+                console.log(error);
+            });
         }
     }
 
@@ -101,18 +108,20 @@ export class BlockCompareViewComponent implements OnInit {
     }
 
     printViewValue(line: LogikViewLine, index: number): string {
-        if (!line.view || line.view.length <= index)
+        if (!line.view || line.view.length <= index) {
             return '';
+        }
 
         const value = line.view[index];
-        if (!value) return '';
-        else return value.text;
+        return (!value) ? '' : value.text;
     }
 
     selectLine(event, line: LogikViewLine) {
-        if (line.blockId == this.block1Id)
+        if (line.blockId === this.block1Id) {
             this.selectedLine1 = line;
-        else this.selectedLine2 = line;
+        } else {
+            this.selectedLine2 = line;
+        }
     }
 
 
@@ -131,7 +140,7 @@ export class BlockCompareViewComponent implements OnInit {
     }
 
     openErrorDialog(message: string) {
-        const dialogRef = this.dialog.open(ErrorDialog, {
+        const dialogRef = this.dialog.open(ErrorDialogComponent, {
             width: '400px',
             data: message
         });

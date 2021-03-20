@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {LogikGroup} from '../../../group/model/logik-group';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Inject} from '@angular/core';
@@ -7,12 +7,12 @@ import {Inject} from '@angular/core';
     selector: 'value-select-dialog',
     templateUrl: './value-select-dialog.component.html',
 })
-export class ValueSelectDialog {
+export class ValueSelectDialogComponent {
 
     selected: boolean[] = [];
 
     constructor(
-        public dialogRef: MatDialogRef<ValueSelectDialog>,
+        public dialogRef: MatDialogRef<ValueSelectDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         for (let i = 0; i < data.group.elements.length; i++) {
@@ -36,8 +36,9 @@ export class ValueSelectDialog {
 
     unselect() {
         const emptySelection = [];
-        for (let i = 0; i < this.selected.length; i++)
+        for (const _ of this.selected) {
             emptySelection.push(false);
+        }
         this.selected = emptySelection;
     }
 }

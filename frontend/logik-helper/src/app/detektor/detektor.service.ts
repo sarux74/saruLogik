@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {LogikView} from '../solve/model/logik-view';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ChangeResult} from '../solve/change-result';
 import {LogikViewLine} from '../solve/model/logik-view-line';
@@ -23,8 +23,8 @@ export class DetektorService {
         return this.http.get<LogikView>(this.solveUrl + 'lines');
     }
 
-    public updateSelection(lineIndex: number, groupIndex: number, selection: number[]) {
-        const data = {lineId: lineIndex, groupId: groupIndex, selection: selection};
+    public updateSelection(lineId: number, groupId: number, selection: number[]) {
+        const data = {lineId, groupId, selection};
         console.log(data);
         return this.http.put<boolean>(this.solveUrl + 'selection', data);
     }
@@ -59,7 +59,7 @@ export class DetektorService {
     }
 
     public loadGroupView(groupId: number): Observable<LogikViewLine[]> {
-        const opts = {params: new HttpParams({fromString: "groupId=" + groupId})};
+        const opts = {params: new HttpParams({fromString: 'groupId=' + groupId})};
 
         return this.http.get<LogikViewLine[]>(this.solveUrl + 'view/group', opts);
     }
@@ -69,7 +69,7 @@ export class DetektorService {
     }
 
     public loadBlockCompareView(block1Id: number, block2Id: number): Observable<any> {
-        const opts = {params: new HttpParams({fromString: "blockId1=" + block1Id + "&blockId2=" + block2Id})};
+        const opts = {params: new HttpParams({fromString: 'blockId1=' + block1Id + '&blockId2=' + block2Id})};
         return this.http.get<any>(this.solveUrl + 'view/blockcompare', opts);
     }
 
@@ -86,7 +86,7 @@ export class DetektorService {
     }
 
     public applyBlockingCandidates(groupId: number, selectedLines: number[]): Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'blocking_candidates', {groupId: groupId, selectedLines: selectedLines});
+        return this.http.put<boolean>(this.solveUrl + 'blocking_candidates', {groupId, selectedLines});
     }
 
 
@@ -95,12 +95,10 @@ export class DetektorService {
     }
 
     public prepare(lineIds: number[]): Observable<boolean> {
-        console.log(lineIds);
         return this.http.put<boolean>(this.solveUrl + 'prepare', lineIds);
     }
 
     public exclude(lineIds: number[]): Observable<ChangeResult> {
-        console.log(lineIds);
         return this.http.put<ChangeResult>(this.solveUrl + 'exclude', lineIds);
     }
 }

@@ -1,11 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {GroupService} from './group.service';
-import {SolveService} from '../solve/solve.service';
 import {LogikGroup} from './model/logik-group';
-import {DetektorService} from '../detektor/detektor.service';
-import {LogikElement} from './model/logik-element';
 import {Router} from '@angular/router';
-import {GroupEditDialog} from './dialog/group-edit-dialog.component';
+import {GroupEditDialogComponent} from './dialog/group-edit-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 
 @Component({
@@ -18,7 +15,7 @@ export class GroupComponent implements OnInit {
     title = 'Logik-Helper';
     groups: LogikGroup[];
     problemType = 0;
-    constructor(private groupService: GroupService, private solveService: SolveService, private detektorService: DetektorService, public dialog: MatDialog, private router: Router) {}
+    constructor(private groupService: GroupService, public dialog: MatDialog, private router: Router) {}
 
     ngOnInit(): void {
         this.load();
@@ -40,9 +37,9 @@ export class GroupComponent implements OnInit {
         const newGroup = new LogikGroup();
         newGroup.elements = [];
         newGroup.index = this.groups.length;
-        const dialogRef = this.dialog.open(GroupEditDialog, {
+        const dialogRef = this.dialog.open(GroupEditDialogComponent, {
             width: '400px',
-            data: {newGroup: newGroup, groups: this.groups}
+            data: {newGroup, groups: this.groups}
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -53,19 +50,23 @@ export class GroupComponent implements OnInit {
     }
 
     editGroup(index: number) {
-        const dialogRef = this.dialog.open(GroupEditDialog, {
+        const dialogRef = this.dialog.open(GroupEditDialogComponent, {
             width: '400px',
             data: {newGroup: this.groups[index], groups: this.groups}
         });
 
         dialogRef.afterClosed().subscribe(result => {
             // No sort, may destroy references: this.sort(result);
-            if (result) this.groupService.updateGroup(result).subscribe(res => console.log('Erfolg'));
+            if (result) {
+                this.groupService.updateGroup(result).subscribe(res => console.log('Erfolg'));
+            }
         });
     }
 
     loadProblem(event: any): void {
-        this.groupService.loadProblem(event).subscribe(result => {this.problemType = result; this.load();});
+        this.groupService.loadProblem(event).subscribe(result => {
+            this.problemType = result; this.load();
+        });
     }
 
     startSolver() {
@@ -82,7 +83,7 @@ export class GroupComponent implements OnInit {
 
     openSolver() {
         const url = this.router.serializeUrl(
-            this.router.createUrlTree(['/solve', {'problem': 0}])
+            this.router.createUrlTree(['/solve', {problem: 0}])
         );
 
         window.open(url, '_blank');

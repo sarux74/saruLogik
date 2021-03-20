@@ -21,20 +21,20 @@ export class GroupService {
     }
 
     public newProblem(): Observable<boolean> {
-        return this.http.put<boolean>("http://localhost:8080/problem/new", null);
+        return this.http.put<boolean>('http://localhost:8080/problem/new', null);
     }
 
     public initProblem(): Observable<boolean> {
-        return this.http.put<boolean>("http://localhost:8080/solve/new", null);
+        return this.http.put<boolean>('http://localhost:8080/solve/new', null);
     }
 
     public initDetektor(): Observable<boolean> {
-        return this.http.put<boolean>("http://localhost:8080/detektor/new", null);
+        return this.http.put<boolean>('http://localhost:8080/detektor/new', null);
     }
 
     public loadProblem(input: any): Observable<number> {
         const formData = new FormData();
         formData.append('file', input.target.files[0]);
-        return this.http.post<any>("http://localhost:8080/problem/load", formData);
+        return this.http.post<any>('http://localhost:8080/problem/load', formData);
     }
 }

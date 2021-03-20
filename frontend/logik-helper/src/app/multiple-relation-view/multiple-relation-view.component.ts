@@ -1,14 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {LogikGroup} from '../group/model/logik-group';
-import {LogikView} from '../solve/model/logik-view';
 import {LogikViewLine} from '../solve/model/logik-view-line';
-import {ErrorDialog} from '../dialog/error-dialog/error-dialog.component';
+import {ErrorDialogComponent} from '../dialog/error-dialog/error-dialog.component';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {ViewService} from '../view.service';
 import {GroupService} from '../group/group.service';
 import {SolveService} from '../solve/solve.service';
-import {ValueSelectDialog} from '../solve/dialog/value-select-dialog/value-select-dialog.component';
+import {ValueSelectDialogComponent} from '../solve/dialog/value-select-dialog/value-select-dialog.component';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
@@ -16,7 +15,7 @@ import {ActivatedRoute} from '@angular/router';
     templateUrl: './multiple-relation-view.component.html',
     styleUrls: ['./multiple-relation-view.component.css']
 })
-export class MultipleRelationViewComponent implements OnInit {
+export class MultipleRelationViewComponent implements OnInit, OnDestroy {
 
 
     title = 'Mehrfache Beziehungen';
@@ -29,7 +28,7 @@ export class MultipleRelationViewComponent implements OnInit {
     private sub: any;
 
     constructor(private groupService: GroupService, private viewService: ViewService, private solveService: SolveService,
-        public dialog: MatDialog, private router: Router, private route: ActivatedRoute) {}
+                public dialog: MatDialog, private router: Router, private route: ActivatedRoute) {}
 
     ngOnInit(): void {
         this.groupService.current().subscribe(data => {
@@ -38,7 +37,8 @@ export class MultipleRelationViewComponent implements OnInit {
             console.log(this.flexPercent);
         });
         this.sub = this.route.params.subscribe(params => {
-            this.key = params['problem']; // (+) converts string 'id' to a number
+            const key = 'problem';
+            this.key = params[key];
             this.loadView(this.key);
 
             // In a real app: dispatch action to load the details here.
@@ -65,16 +65,16 @@ export class MultipleRelationViewComponent implements OnInit {
     }
 
     printViewValue(line: LogikViewLine, index: number): string {
-        if (!line.view || line.view.length <= index)
+        if (!line.view || line.view.length <= index){
             return '';
+        }
 
         const value = line.view[index];
-        if (!value) return '';
-        else return value.text;
+        return (!value) ? '' : value.text;
     }
 
     editSelection(line: LogikViewLine, index: number): void {
-        const dialogRef = this.dialog.open(ValueSelectDialog, {
+        const dialogRef = this.dialog.open(ValueSelectDialogComponent, {
             width: '400px',
             data: {
                 group: this.groups[index],
@@ -83,24 +83,25 @@ export class MultipleRelationViewComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result)
-                this.solveService.updateSelection(this.key, line.lineId, index, result).subscribe(result => {
-                    console.log(result);
+            if (result) {
+                this.solveService.updateSelection(this.key, line.lineId, index, result).subscribe(_ => {
                     this.loadView(this.key);
-                })
+                });
+            }
         });
     }
 
     selectLine(event, line: LogikViewLine) {
         console.log(event);
-        if (event.checked)
+        if (event.checked) {
             this.selectedLine = line;
-        else
+        }        else {
             this.selectedLine = null;
+        }
     }
 
     openErrorDialog(message: string) {
-        const dialogRef = this.dialog.open(ErrorDialog, {
+        const dialogRef = this.dialog.open(ErrorDialogComponent, {
             width: '400px',
             data: message
         });

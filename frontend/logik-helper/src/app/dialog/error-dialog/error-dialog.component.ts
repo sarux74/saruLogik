@@ -7,10 +7,10 @@ import {Inject} from '@angular/core';
     templateUrl: './error-dialog.component.html',
     styleUrls: ['./error-dialog.component.css']
 })
-export class ErrorDialog implements OnInit {
+export class ErrorDialogComponent implements OnInit {
 
-    constructor(public dialogRef: MatDialogRef<ErrorDialog>,
-        @Inject(MAT_DIALOG_DATA) public message: string) {}
+    constructor(public dialogRef: MatDialogRef<ErrorDialogComponent>,
+                @Inject(MAT_DIALOG_DATA) public message: string) {}
 
     ngOnInit(): void {
         console.log(this.message);

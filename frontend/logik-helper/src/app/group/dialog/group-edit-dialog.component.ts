@@ -2,9 +2,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Inject} from '@angular/core';
 import {LogikGroup} from '../model/logik-group';
 import {LogikElement} from '../model/logik-element';
-import {MatInputModule} from '@angular/material/input';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 
 @Component({
@@ -13,7 +11,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
     styleUrls: ['./group-edit-dialog.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GroupEditDialog {
+export class GroupEditDialogComponent {
 
     copyGroupId: number;
     seriesFrom: number;
@@ -23,7 +21,7 @@ export class GroupEditDialog {
     addSize = 1;
 
     constructor(
-        public dialogRef: MatDialogRef<GroupEditDialog>,
+        public dialogRef: MatDialogRef<GroupEditDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: {newGroup: LogikGroup, groups: LogikGroup[]}) {}
 
     newElement(index: number) {
@@ -52,14 +50,15 @@ export class GroupEditDialog {
 
     submit() {
         let result = this.data.newGroup;
-        if (this.sortAfterSave)
+        if (this.sortAfterSave) {
             result = this.sort(this.data.newGroup);
+        }
         this.dialogRef.close(result);
     }
 
     copyGroup() {
         const copiedGroup = [];
-        for (let element of this.data.groups[this.copyGroupId].elements) {
+        for (const element of this.data.groups[this.copyGroupId].elements) {
             const newElement = new LogikElement();
             newElement.index = element.index;
             newElement.shortName = element.shortName;
@@ -74,15 +73,17 @@ export class GroupEditDialog {
         const seriesTo = +this.seriesTo;
         const seriesStep = +this.seriesStep;
 
-        let numberLength = (seriesTo >= 1000) ? 4 : (seriesTo >= 100) ? 3 : seriesTo >= 10 ? 2 : 1;
+        const numberLength = (seriesTo >= 1000) ? 4 : (seriesTo >= 100) ? 3 : seriesTo >= 10 ? 2 : 1;
         let counter = seriesFrom;
         let index = 0;
         const copiedGroup = [];
         while (counter <= seriesTo) {
             const newElement = new LogikElement();
             newElement.index = index;
-            let shortName = counter + "";
-            while (shortName.length < numberLength) shortName = "0" + shortName;
+            let shortName = counter + '';
+            while (shortName.length < numberLength) {
+                shortName = '0' + shortName;
+            }
 
             newElement.shortName = shortName;
             newElement.name = '' + counter;

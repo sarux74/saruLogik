@@ -4,10 +4,10 @@ import {LogikGroup} from '../group/model/logik-group';
 import {LogikViewLine} from '../solve/model/logik-view-line';
 import {GroupService} from '../group/group.service';
 import {PositionerService} from './positioner.service';
-import {ErrorDialog} from '../dialog/error-dialog/error-dialog.component';
+import {ErrorDialogComponent} from '../dialog/error-dialog/error-dialog.component';
 import {Router} from '@angular/router';
 import {ActivatedRoute} from '@angular/router';
-import {ValueSelectDialog} from '../solve/dialog/value-select-dialog/value-select-dialog.component';
+import {ValueSelectDialogComponent} from '../solve/dialog/value-select-dialog/value-select-dialog.component';
 
 @Component({
     selector: 'app-positioner',
@@ -30,8 +30,8 @@ export class PositionerComponent implements OnInit {
 
     flexPercent: number;
 
-    constructor(private groupService: GroupService, private positionerService: PositionerService, public dialog: MatDialog, private router: Router,
-        private route: ActivatedRoute) {}
+    constructor(private groupService: GroupService, private positionerService: PositionerService, public dialog: MatDialog,
+                private route: ActivatedRoute) {}
 
     ngOnInit(): void {
         this.groupService.current().subscribe(data => {
@@ -41,7 +41,8 @@ export class PositionerComponent implements OnInit {
         });
 
         this.sub = this.route.params.subscribe(params => {
-            this.key = params['problem'];
+            const key = 'problem';
+            this.key = params[key];
         });
     }
 
@@ -55,23 +56,26 @@ export class PositionerComponent implements OnInit {
         console.log(index);
         if (index === 1) {
             const group2Prep = [];
-            for (let id of this.groups) {
-                if (id.index !== this.group1Id)
+            for (const id of this.groups) {
+                if (id.index !== this.group1Id) {
                     group2Prep.push(id);
+                }
             }
             this.groups2 = group2Prep;
         } else if (index === 2) {
             const group1Prep = [];
-            for (let id of this.groups) {
-                if (id.index !== this.group2Id)
+            for (const id of this.groups) {
+                if (id.index !== this.group2Id) {
                     group1Prep.push(id);
+                }
             }
             this.groups1 = group1Prep;
         }
         console.log(this.group1Id);
         console.log(this.group2Id);
-        if (this.group1Id > -1 && this.group2Id > -1)
+        if (this.group1Id > -1 && this.group2Id > -1) {
             this.initPositionerView();
+        }
     }
 
     initPositionerView() {
@@ -102,16 +106,16 @@ export class PositionerComponent implements OnInit {
     }
 
     printViewValue(valueList: any[], index: number): string {
-        if (!valueList || valueList.length <= index)
+        if (!valueList || valueList.length <= index) {
             return '';
+        }
 
         const value = valueList[index];
-        if (!value) return '';
-        else return value.text;
+        return (!value) ? '' : value.text;
     }
 
     editSelection(lineId: number, valueList: any[], index: number): void {
-        const dialogRef = this.dialog.open(ValueSelectDialog, {
+        const dialogRef = this.dialog.open(ValueSelectDialogComponent, {
             width: '400px',
             data: {
                 group: this.groups[this.group2Id],
@@ -120,14 +124,14 @@ export class PositionerComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result)
-                this.positionerService.updateSelection(this.key, lineId, index, result).subscribe(result => {
-                    console.log(result);
+            if (result) {
+                this.positionerService.updateSelection(this.key, lineId, index, result).subscribe(_ => {
                     this.loadPositionerView();
                 },
                     error => {
                         console.log(error);
-                    })
+                    });
+            }
         });
     }
 
@@ -139,7 +143,7 @@ export class PositionerComponent implements OnInit {
             error => {
                 console.log(error);
             }
-        )
+        );
     }
 
     removeLine(lineId: number) {
@@ -150,7 +154,7 @@ export class PositionerComponent implements OnInit {
             error => {
                 console.log(error);
             }
-        )
+        );
     }
 
     copyToLeft(lineId: number) {
@@ -161,7 +165,7 @@ export class PositionerComponent implements OnInit {
             error => {
                 console.log(error);
             }
-        )
+        );
     }
 
     copyToRight(lineId: number) {
@@ -172,7 +176,7 @@ export class PositionerComponent implements OnInit {
             error => {
                 console.log(error);
             }
-        )
+        );
     }
 
     overtake() {
@@ -182,8 +186,6 @@ export class PositionerComponent implements OnInit {
             error => {
                 console.log(error);
             }
-        )
+        );
     }
-
-    //
 }

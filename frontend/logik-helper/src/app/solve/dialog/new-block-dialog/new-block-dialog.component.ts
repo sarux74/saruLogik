@@ -7,7 +7,7 @@ import {LogikGroup} from '../../../group/model/logik-group';
     templateUrl: './new-block-dialog.component.html',
     styleUrls: ['./new-block-dialog.component.css']
 })
-export class NewBlockDialog implements OnInit {
+export class NewBlockDialogComponent implements OnInit {
 
     blockName: string;
     noDuplicates: boolean;
