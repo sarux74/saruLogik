@@ -1,5 +1,11 @@
 package de.sarux.logik.helper.application.detektor;
 
+import de.sarux.logik.helper.problem.solve.ChangeResult;
+import de.sarux.logik.helper.problem.LogikLine;
+import de.sarux.logik.helper.problem.LogikRelationType;
+import de.sarux.logik.helper.problem.LogikLineRelation;
+import de.sarux.logik.helper.problem.LogikBlock;
+import de.sarux.logik.helper.problem.LogikElement;
 import de.sarux.logik.helper.application.*;
 import de.sarux.logik.helper.application.group.LogikGroup;
 

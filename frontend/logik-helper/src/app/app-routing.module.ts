@@ -9,23 +9,25 @@ import {BlockCompareViewComponent} from './block-compare-view/block-compare-view
 import {MultipleRelationViewComponent} from './multiple-relation-view/multiple-relation-view.component';
 import {CombinationViewComponent} from './combination-view/combination-view.component';
 import {PositionerComponent} from './positioner/positioner.component';
+import {EditComponent} from './edit/edit.component';
 
 const routes: Routes = [
-    {path: 'group', component: GroupComponent},
-    {path: '', redirectTo: '/group', pathMatch: 'full'}, // redirect to `first-component`
+    {path: 'groups', component: GroupComponent},
+    {path: '', redirectTo: '/groups', pathMatch: 'full'}, // redirect to `first-component`
+    {path: 'edit', component: EditComponent},
     {path: 'solve', component: SolveComponent},
     {path: 'detektor', component: DetektorComponent},
-    {path: 'view/compact', component: CompactViewComponent},
-    {path: 'view/group', component: GroupViewComponent},
-    {path: 'view/block', component: BlockCompareViewComponent},
-    {path: 'view/multiple', component: MultipleRelationViewComponent},
-    {path: 'view/combination', component: CombinationViewComponent},
-    {path: 'view/positioner', component: PositionerComponent},
+    {path: 'compact', component: CompactViewComponent},
+    {path: 'group', component: GroupViewComponent},
+    {path: 'block', component: BlockCompareViewComponent},
+    {path: 'multiple', component: MultipleRelationViewComponent},
+    {path: 'combination', component: CombinationViewComponent},
+    {path: 'positioner', component: PositionerComponent},
     {path: '**', component: GroupComponent},
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })],
     exports: [RouterModule]
 })
 export class AppRoutingModule {}

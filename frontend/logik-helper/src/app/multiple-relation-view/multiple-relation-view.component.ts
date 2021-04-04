@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {LogikGroup} from '../group/model/logik-group';
-import {LogikViewLine} from '../solve/model/logik-view-line';
+import {LogikViewLine} from '../model/logik-view-line';
 import {ErrorDialogComponent} from '../dialog/error-dialog/error-dialog.component';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';

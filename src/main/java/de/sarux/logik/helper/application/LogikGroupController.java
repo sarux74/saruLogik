@@ -1,5 +1,6 @@
 package de.sarux.logik.helper.application;
 
+import de.sarux.logik.helper.problem.LogikElement;
 import de.sarux.logik.helper.application.group.LogikGroup;
 import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import org.springframework.beans.factory.annotation.Autowired;

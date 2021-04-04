@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {SolveService} from '../solve/solve.service';
 import {GroupService} from '../group/group.service';
 import {LogikGroup} from '../group/model/logik-group';
-import {LogikViewLine} from '../solve/model/logik-view-line';
+import {LogikViewLine} from '../model/logik-view-line';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({

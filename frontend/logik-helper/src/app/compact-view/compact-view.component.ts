@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {LogikGroup} from '../group/model/logik-group';
-import {LogikView} from '../solve/model/logik-view';
-import {LogikViewLine} from '../solve/model/logik-view-line';
+import {LogikView} from '../model/logik-view';
+import {LogikViewLine} from '../model/logik-view-line';
 import {MatDialog} from '@angular/material/dialog';
 import {SolveService} from '../solve/solve.service';
 import {GroupService} from '../group/group.service';

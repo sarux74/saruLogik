@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {LogikView} from './model/logik-view';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {LogikView} from '../model/logik-view';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ChangeResult} from './change-result';
-import {LogikViewLine} from './model/logik-view-line';
+import {LogikViewLine} from '../model/logik-view-line';
 import {IdNamePair} from '../block-compare-view/id-name-pair';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class SolveService {
     private solveUrl: string;
 
     constructor(private http: HttpClient) {
-        this.solveUrl = 'http://localhost:8080/solve/';
+        this.solveUrl = 'http://localhost:8080';
     }
 
     public load(problemKey: string): Observable<LogikView> {
@@ -102,7 +102,9 @@ export class SolveService {
     }
 
     public buildProblemUrl(problemKey: string, path: string): string {
-        return this.solveUrl + 'problems/' + problemKey + path;
+        const url = this.solveUrl + '/problems/' + problemKey + path
+        console.log(url);
+        return url;
     }
 
 }

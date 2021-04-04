@@ -1,6 +1,6 @@
 package de.sarux.logik.helper.application.group;
 
-import de.sarux.logik.helper.application.LogikElement;
+import de.sarux.logik.helper.problem.LogikElement;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 @Getter
 public class LogikGroupsBean {
-    private List<LogikGroup> groups = new ArrayList<>();
+    private final List<LogikGroup> groups = new ArrayList<>();
 
     public LogikGroup newGroup(String name) {
         LogikGroup group = new LogikGroup(groups.size(), name);
@@ -46,6 +46,7 @@ public class LogikGroupsBean {
     }
 
     public void reset(List<LogikGroup> groups) {
-        this.groups = groups;
+        clear();
+        this.groups.addAll(groups);
     }
 }

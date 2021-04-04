@@ -1,5 +1,7 @@
 package de.sarux.logik.helper.application;
 
+import de.sarux.logik.helper.problem.view.ViewLineType;
+import de.sarux.logik.helper.problem.view.ValueView;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Deprecated
 public class LogicBlockViewLine {
 
     private final ViewLineType type;

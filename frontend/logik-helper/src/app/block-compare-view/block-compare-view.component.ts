@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {SolveService} from '../solve/solve.service';
 import {GroupService} from '../group/group.service';
 import {LogikGroup} from '../group/model/logik-group';
-import {LogikViewLine} from '../solve/model/logik-view-line';
+import {LogikViewLine} from '../model/logik-view-line';
 import {IdNamePair} from './id-name-pair';
 import {ErrorDialogComponent} from '../dialog/error-dialog/error-dialog.component';
 import {MatDialog} from '@angular/material/dialog';

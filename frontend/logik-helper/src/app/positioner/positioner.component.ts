@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {LogikGroup} from '../group/model/logik-group';
-import {LogikViewLine} from '../solve/model/logik-view-line';
+import {LogikViewLine} from '../model/logik-view-line';
 import {GroupService} from '../group/group.service';
 import {PositionerService} from './positioner.service';
-import {ErrorDialogComponent} from '../dialog/error-dialog/error-dialog.component';
-import {Router} from '@angular/router';
 import {ActivatedRoute} from '@angular/router';
 import {ValueSelectDialogComponent} from '../solve/dialog/value-select-dialog/value-select-dialog.component';
 

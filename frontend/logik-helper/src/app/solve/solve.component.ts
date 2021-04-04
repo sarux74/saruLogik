@@ -1,22 +1,21 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {LogikGroup} from '../group/model/logik-group';
-import {LogikView} from './model/logik-view';
-import {LogikViewLine} from './model/logik-view-line';
+import {LogikView} from '../model/logik-view';
+import {LogikViewLine} from '../model/logik-view-line';
 import {MatDialog} from '@angular/material/dialog';
 import {SolveService} from './solve.service';
 import {GroupService} from '../group/group.service';
 import {ValueSelectDialogComponent} from './dialog/value-select-dialog/value-select-dialog.component';
-import {NewBlockDialogComponent} from './dialog/new-block-dialog/new-block-dialog.component';
-import {NewRelationDialogComponent} from './dialog/new-relation-dialog/new-relation-dialog.component';
 import {ShowChangesDialogComponent} from './dialog/show-changes/show-changes.component';
 import {ErrorDialogComponent} from '../dialog/error-dialog/error-dialog.component';
 import {Router} from '@angular/router';
 import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
     selector: 'app-solve',
     templateUrl: './solve.component.html',
-    styleUrls: ['./solve.component.css']
+    styleUrls: ['./solve.component.css', '../common.css']
 })
 export class SolveComponent implements OnInit, OnDestroy {
 
@@ -30,37 +29,60 @@ export class SolveComponent implements OnInit, OnDestroy {
     markedLines: number[] = [];
 
     key: string;
-    private sub: any;
+    private sub: Subscription;
+
+    views = {
+        edit: 'Rätsel bearbeiten',
+        solve: 'Löser',
+        compact: 'Kompakte Ansicht',
+        group: 'Gruppen-Ansicht',
+        block: 'Blockvergleich',
+        multiple: 'Mehrfach-Beziehungen',
+        positioner: 'Positionieren'
+    };
+    selected_view: string;
+
 
     constructor(private groupService: GroupService, private solveService: SolveService, public dialog: MatDialog, private router: Router,
-                private route: ActivatedRoute) {}
+        private route: ActivatedRoute) {}
 
     ngOnInit(): void {
-        this.groupService.current().subscribe(data => {
-            this.groups = data;
-            this.flexPercent = Math.floor(94 / this.groups.length);
-            console.log(this.flexPercent);
+        this.groupService.current().subscribe({
+            next: this.handleGroups.bind(this)
         });
-        this.sub = this.route.params.subscribe(params => {
-            const key = 'problem';
-            this.key = params[key];
-            this.loadView(this.key);
-
+        this.sub = this.route.params.subscribe({
+            next: this.handleProblemKey.bind(this)
             // In a real app: dispatch action to load the details here.
         });
     }
 
+    handleGroups(data: any) {
+        this.groups = data;
+        this.flexPercent = Math.floor(94 / this.groups.length);
+        console.log(this.flexPercent);
+    }
+
+    handleProblemKey(params: any) {
+        const key = 'problem';
+        this.key = params[key];
+        this.loadView(this.key);
+
+    }
     ngOnDestroy() {
         this.sub.unsubscribe();
     }
 
     loadView(problemKey: string) {
-        this.solveService.load(problemKey).subscribe((data: LogikView) => {
-            this.origLines = data.lines;
-            this.selectedLines = [];
-            this.toggleEdit();
-            console.log(this.lines);
+        this.solveService.load(problemKey).subscribe({
+            next: this.handleLoadedView.bind(this)
         });
+    }
+
+    handleLoadedView(data: LogikView) {
+        this.origLines = data.lines;
+        this.selectedLines = [];
+        this.toggleEdit();
+        console.log(this.lines);
     }
 
     toggleEdit() {
@@ -120,20 +142,6 @@ export class SolveComponent implements OnInit, OnDestroy {
         });
     }
 
-    newBlock(): void {
-        const dialogRef = this.dialog.open(NewBlockDialogComponent, {
-            width: '400px'
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.solveService.newBlock(this.key, result).subscribe(resResult => {
-                    this.loadView(this.key);
-                });
-            }
-        });
-    }
-
     selectLine(event, line: LogikViewLine) {
         setTimeout(() => {
             console.log(event);
@@ -152,21 +160,6 @@ export class SolveComponent implements OnInit, OnDestroy {
 
     isSelected(line: LogikViewLine) {
         return this.selectedLines.indexOf(line) > 0;
-    }
-
-    newLine(blockId: number): void {
-        const dialogRef = this.dialog.open(NewRelationDialogComponent, {
-            width: '400px',
-            data: {blockId, groups: this.groups}
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.solveService.newRelation(this.key, result).subscribe(resResult => {
-                    this.loadView(this.key);
-                });
-            }
-        });
     }
 
     flipBlock(blockId: number) {
@@ -297,103 +290,14 @@ export class SolveComponent implements OnInit, OnDestroy {
         });
     }
 
-    editRelation(line: LogikViewLine, groupIndex: number) {
-        if (line.type !== 'RELATION_UPPER') {
-            return;
+    changeView() {
+        if (this.selected_view) {
+            const url = this.router.serializeUrl(
+                this.router.createUrlTree(['/view/' + this.selected_view, {problem: this.key}])
+            );
+
+            window.open(url, '_blank');
         }
-
-        const blockId = line.blockId;
-        const leftLineId = line.lineId;
-        let rightLineId;
-        const index = this.lines.indexOf(line);
-        if (index) {
-            const nextLine = this.lines[index + 1];
-            rightLineId = nextLine.rightLineId;
-        }
-
-        console.log(leftLineId);
-        console.log(rightLineId);
-        const dialogRef = this.dialog.open(NewRelationDialogComponent, {
-            width: '400px',
-            data: {blockId, leftLineId, rightLineId, groups: this.groups, groupIndex}
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.solveService.newRelation(this.key, result).subscribe(relResult => {
-                    console.log(relResult);
-                    this.loadView(this.key);
-                });
-            }
-        });
-    }
-
-    openCompactView() {
-        const url = this.router.serializeUrl(
-            this.router.createUrlTree(['/view/compact', {problem: this.key}])
-        );
-
-        window.open(url, '_blank');
-    }
-
-    openGroupView() {
-        const url = this.router.serializeUrl(
-            this.router.createUrlTree(['/view/group', {problem: this.key}])
-        );
-
-        window.open(url, '_blank');
-    }
-
-    openBlockCompareView() {
-        const url = this.router.serializeUrl(
-            this.router.createUrlTree(['/view/block', {problem: this.key}])
-        );
-
-        window.open(url, '_blank');
-    }
-
-    openMultipleRelationView() {
-        const url = this.router.serializeUrl(
-            this.router.createUrlTree(['/view/multiple', {problem: this.key}])
-        );
-
-        window.open(url, '_blank');
-    }
-
-    openPositioner() {
-        const url = this.router.serializeUrl(
-            this.router.createUrlTree(['/view/positioner', {problem: this.key}])
-        );
-
-        window.open(url, '_blank');
-    }
-
-    blockUp() {
-        if (this.selectedLines.length !== 1) {
-            return;
-        }
-
-        this.solveService.blockUp(this.key, this.selectedLines[0]).subscribe(result => {
-            this.loadView(this.key);
-        }, error => {
-            console.log(error);
-            this.openErrorDialog(error);
-        }
-        );
-    }
-
-    blockDown() {
-        if (this.selectedLines.length !== 1) {
-            return;
-        }
-
-        this.solveService.blockDown(this.key, this.selectedLines[0]).subscribe(result => {
-            this.loadView(this.key);
-        }, error => {
-            console.log(error);
-            this.openErrorDialog(error);
-        }
-        );
     }
 
     refreshView() {

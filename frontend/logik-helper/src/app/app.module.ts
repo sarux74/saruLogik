@@ -18,8 +18,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SolveComponent} from './solve/solve.component';
 import {DetektorComponent} from './detektor/detektor.component';
 import {ValueSelectDialogComponent} from './solve/dialog/value-select-dialog/value-select-dialog.component';
-import {NewBlockDialogComponent} from './solve/dialog/new-block-dialog/new-block-dialog.component';
-import {NewRelationDialogComponent} from './solve/dialog/new-relation-dialog/new-relation-dialog.component';
+import {NewBlockDialogComponent} from './edit/dialog/new-block-dialog/new-block-dialog.component';
+import {NewRelationDialogComponent} from './edit/dialog/new-relation-dialog/new-relation-dialog.component';
 import {MatSelectModule} from '@angular/material/select';
 import {CompactViewComponent} from './compact-view/compact-view.component';
 import {GroupViewComponent} from './group-view/group-view.component';
@@ -33,6 +33,7 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
 import {MultipleRelationViewComponent} from './multiple-relation-view/multiple-relation-view.component';
 import {CombinationViewComponent} from './combination-view/combination-view.component';
 import {PositionerComponent} from './positioner/positioner.component';
+import {EditComponent} from './edit/edit.component';
 
 @NgModule({
     declarations: [
@@ -52,7 +53,8 @@ import {PositionerComponent} from './positioner/positioner.component';
         ErrorDialogComponent,
         MultipleRelationViewComponent,
         CombinationViewComponent,
-        PositionerComponent
+        PositionerComponent,
+        EditComponent
     ],
     imports: [
         BrowserModule,

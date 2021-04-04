@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@Deprecated
 public class ProblemBean {
     private final Map<String, LogikProblem> problems = new HashMap<>();
 

@@ -1,33 +1,15 @@
-<div id="header">
+<div id="subheader">
     <!--  style="position:absolute; top:0px;right:10px;left:10px;width=100%;background-color:white;z-index: 0;overflow: hidden;" -->
-    <div fxLayout="row" fxLayoutAlign="left">
-        Editieren: <input type="checkbox" [(ngModel)]="showEditButtons" (change)="toggleEdit()"/>
-        <button [disabled]="selectedLines.length == 0" (click)="findNegatives()">Ausschlüsse entfernen</button>
-        <button [disabled]="selectedLines.length == 0" (click)="findPositives()">Duplikate vereinigen</button>
-        <button type="button"
-                fileSaver
-                [method]="'GET'"
-                [fileName]="'problem.json'"
-                [url]="'http://localhost:8080/problem/save'"
-                [header]="{ token: 'logik' }">Speichern
-        </button>
+    <div fxLayout="row" fxLayoutAlign="left" id="button-row">
+        <button mat-raised-button [disabled]="selectedLines.length == 0" (click)="findNegatives()">Ausschlüsse entfernen</button>
+        <button mat-raised-button [disabled]="selectedLines.length == 0" (click)="findPositives()">Duplikate vereinigen</button>
+
         <button mat-icon-button color="secondary" aria-label="Aktualisieren"
                 (click)="refreshView()">
             <mat-icon>refresh</mat-icon>
         </button>
-        Ansichten:
-        <button (click)="openCompactView()">Kompakte Ansicht</button>
-        <button (click)="openGroupView()">Gruppen-Ansicht</button>
-        <button (click)="openBlockCompareView()">Blockvergleich</button>
-        <button (click)="openMultipleRelationView()">Mehrfach-Beziehungen</button>
-        <button (click)="openPositioner()">Positionieren</button>
-        <button [disabled]="selectedLines.length !== 2" (click)="newCase()">Fallunterscheidung</button>
-        <button *ngIf="isCase()" (click)="closeCase()">Fall ausschließen</button>
-        <div *ngIf="showEditButtons">
-            Verschieben:
-            <button [disabled]="selectedLines.length == 0" (click)="blockUp()">Up</button>
-            <button [disabled]="selectedLines.length == 0" (click)="blockDown()">Down</button>
-        </div>
+        <button [disabled]="selectedLines.length !== 2" (click)="newCase()" mat-raised-button>Fallunterscheidung</button>
+        <button *ngIf="isCase()" (click)="closeCase()" mat-raised-button>Fall ausschließen</button>
     </div>
     <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">
         <div fxLayout="row" fxLayoutAlign="space-around">
@@ -42,86 +24,63 @@
         </div>
     </div>
 </div>
-<div id="content">
-    <div *ngIf="lines && groups" style="padding-top: 50px;z-index:1;">
-        <div *ngFor="let line of lines">
-            <div [ngSwitch]="line.type">
-                <div *ngSwitchCase="'MAIN_SEPARATOR'">
-                    <hr/>
-                </div>
-                <div *ngSwitchCase="'SUB_SEPARATOR'">
-                    <!-- TODO: thinner -->
-                    <hr/>
-                </div>
-                <div *ngSwitchCase="'ADD_LINE'" fxLayout="row" fxLayoutAlign="space-around">
-                    <div fxFlex="6">
-                        &nbsp;
-                    </div>
-                    <div fxFlex="94">
-                        <button mat-icon-button color="secondary" aria-label="Neue Beziehung"
-                                (click)="newLine(line.blockId)">
-                            <mat-icon>playlist_add</mat-icon>
-                        </button>
-                    </div>
-                </div>
-                <div *ngSwitchCase="'ADD_BLOCK'" fxLayout="row" fxLayoutAlign="space-around">
-                    <div fxFlex="6">
-                        &nbsp;
-                    </div>
-                    <div fxFlex="94">
-                        <button mat-icon-button color="primary" aria-label="Neuer Block"
-                                (click)="newBlock()">
-                            <mat-icon>add_box</mat-icon>
-                        </button>
-                    </div>
-                </div>
-                <div *ngSwitchCase="'BLOCK'" fxLayout="row" fxLayoutAlign="space-around">
-                    <div fxFlex="2">
-                        <button *ngIf="showHideBlockButton(line)" mat-icon-button (click)="hideBlock(line.blockId)"><i
-                                class="material-icons">remove</i></button>
-                        <button *ngIf="showShowBlockButton(line)" mat-icon-button (click)="showBlock(line.blockId)"><i
-                                class="material-icons">add</i></button>
-                    </div>
-                    <div fxFlex="4">
-                    </div>
-                    <div fxFlex="94">
-                        <div (dblclick)="flipBlock(line.blockId)"><b>{{printViewValue(line, 0)}}</b></div>
-                    </div>
-                </div>
 
-                <div *ngSwitchCase="'RELATION_UPPER'" fxLayout="row" fxLayoutAlign="space-around">
-                    <div fxFlex="6">
-
-                    </div>
-                    <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-                        <div (dblclick)="editRelation(line, i)">{{printViewValue(line, i)}}</div>
-                    </div>
+<div *ngIf="lines && groups">
+    <div *ngFor="let line of lines">
+        <div [ngSwitch]="line.type">
+            <div *ngSwitchCase="'MAIN_SEPARATOR'">
+                <hr/>
+            </div>
+            <div *ngSwitchCase="'SUB_SEPARATOR'">
+                <!-- TODO: thinner -->
+                <hr/>
+            </div>
+            <div *ngSwitchCase="'BLOCK'" fxLayout="row" fxLayoutAlign="space-around">
+                <div fxFlex="2">
+                    <button *ngIf="showHideBlockButton(line)" mat-icon-button (click)="hideBlock(line.blockGroupId)"><i
+                            class="material-icons">remove</i></button>
+                    <button *ngIf="showShowBlockButton(line)" mat-icon-button (click)="showBlock(line.blockGroupId)"><i
+                            class="material-icons">add</i></button>
                 </div>
-
-                <div *ngSwitchCase="'RELATION_LOWER'" fxLayout="row" fxLayoutAlign="space-around">
-                    <div fxFlex="6">
-
-                    </div>
-                    <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-                        <div>{{printViewValue(line, i)}}</div>
-                    </div>
+                <div fxFlex="4">
                 </div>
+                <div fxFlex="94">
+                    <div (dblclick)="flipBlock(line.blockId)"><b>{{printViewValue(line, 0)}}</b></div>
+                </div>
+            </div>
 
-                <div *ngSwitchDefault fxLayout="row" fxLayoutAlign="space-around"
-                     [ngClass]="{'marked': markedLines.indexOf(line.lineId) > -1}">
-                    <div fxFlex="2">
+            <div *ngSwitchCase="'RELATION_UPPER'" fxLayout="row" fxLayoutAlign="space-around">
+                <div fxFlex="6">
 
-                    </div>
-                    <div fxFlex="2">
-                        <mat-checkbox *ngIf="isValueLine(line)" [checked]="isSelected(line)"
-                                      (change)="selectLine($event, line)"></mat-checkbox>
-                    </div>
-                    <div fxFlex="2">
-                        <div *ngIf="line.type === 'LINE' || line.type === 'SUBLINE'">{{line.lineId}}</div>
-                    </div>
-                    <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-                        <div (click)="editSelection(line, i)">{{printViewValue(line, i)}}</div>
-                    </div>
+                </div>
+                <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+                    <div>{{printViewValue(line, i)}}</div>
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'RELATION_LOWER'" fxLayout="row" fxLayoutAlign="space-around">
+                <div fxFlex="6">
+
+                </div>
+                <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+                    <div>{{printViewValue(line, i)}}</div>
+                </div>
+            </div>
+
+            <div *ngSwitchDefault fxLayout="row" fxLayoutAlign="space-around"
+                 [ngClass]="{'marked': markedLines.indexOf(line.lineId) > -1}">
+                <div fxFlex="2">
+
+                </div>
+                <div fxFlex="2">
+                    <mat-checkbox *ngIf="isValueLine(line)" [checked]="isSelected(line)"
+                                  (change)="selectLine($event, line)"></mat-checkbox>
+                </div>
+                <div fxFlex="2">
+                    <div *ngIf="line.type === 'LINE' || line.type === 'SUBLINE'">{{line.lineId}}</div>
+                </div>
+                <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+                    <div (click)="editSelection(line, i)">{{printViewValue(line, i)}}</div>
                 </div>
             </div>
         </div>
