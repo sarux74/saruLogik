@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.sarux.logik.helper.application.detektor.CombinationView;
 import de.sarux.logik.helper.application.detektor.LineSearchResult;
 import de.sarux.logik.helper.application.group.LogikGroup;
+import de.sarux.logik.helper.problem.view.grid.LogikProblemGrid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,9 @@ public class GeneralLogikProblem {
 
     @Getter
     private final String version = "1.0";
+
+    @Getter
+    private LogikProblemGrid grid;
 
     private int nextBlockIndex = 1;
     private int nextBlockGroupIndex = 1;
@@ -165,15 +169,6 @@ public class GeneralLogikProblem {
             }
         }
         return null;
-    }
-
-    // TODO: used?
-    private boolean blockContainsLine(GeneralLogikBlock block, Integer lineId) {
-        boolean inMainLines = block.getMainLines().stream().anyMatch(o -> o.getLineId() == lineId);
-        if (inMainLines) {
-            return true;
-        }
-        return block.getSubLines().stream().anyMatch(o -> o.getLineId() == lineId);
     }
 
     public void handleFoundOption(final LogikOptionBlockGroup blockGroup, GeneralLogikBlock block) {
@@ -296,5 +291,14 @@ public class GeneralLogikProblem {
 
     public CombinationView buildCombinationView() {
         return combinationHandler.buildCombinationView();
+    }
+
+    public LogikProblemGrid ensureGrid() {
+        if (grid == null) {
+            LogikProblemGrid grid = new LogikProblemGrid(this);
+            this.grid = grid;
+
+        }
+        return grid;
     }
 }

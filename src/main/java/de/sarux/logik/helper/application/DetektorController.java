@@ -2,7 +2,6 @@ package de.sarux.logik.helper.application;
 
 import static de.sarux.logik.helper.application.LogikProblemEditController.SOLVE_VIEW_NAME;
 import de.sarux.logik.helper.application.detektor.*;
-import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import de.sarux.logik.helper.problem.GeneralLogikBlock;
 import de.sarux.logik.helper.problem.GeneralLogikProblem;
 import de.sarux.logik.helper.problem.LogikLine;
@@ -20,13 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class DetektorController {
 
     private final GeneralLogikProblemBean problemBean;
-    private final LogikGroupsBean logikGroupsBean;
 
     // standard constructors
     @Autowired
-    public DetektorController(LogikGroupsBean logikGroupsBean, GeneralLogikProblemBean problemBean) {
+    public DetektorController(GeneralLogikProblemBean problemBean) {
         this.problemBean = problemBean;
-        this.logikGroupsBean = logikGroupsBean;
     }
 
     @GetMapping("/problems/{problemKey}/detektor/view/combination")

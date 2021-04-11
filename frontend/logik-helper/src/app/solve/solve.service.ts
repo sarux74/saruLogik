@@ -27,6 +27,12 @@ export class SolveService {
         return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/selection'), data);
     }
 
+    public updateGrid(problemKey: string, lineIndex: number, group1Index: number, group2Index: number, selection: number[]) {
+        const data = {element1Id: lineIndex, group1Id: group1Index, group2Id: group2Index, selection};
+        console.log(data);
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/grid'), data);
+    }
+
     public newBlock(problemKey: string, result: any): Observable<boolean> {
         return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/block/new'), result);
     }

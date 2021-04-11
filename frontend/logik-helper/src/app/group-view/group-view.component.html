@@ -34,8 +34,8 @@
             <div fxFlex="2">
                 <mat-checkbox [(ngModel)]="selectedLines[i]"></mat-checkbox>
             </div>
-            <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-                <div>{{printViewValue(line, i)}}</div>
+            <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let j = index">
+                <div (click)="editSelection(line, j)">{{printViewValue(line, j)}}</div>
             </div>
         </div>
     </div>

@@ -5,12 +5,12 @@
  */
 package de.sarux.logik.helper.problem.view.group;
 
-import de.sarux.logik.helper.application.LogicBlockViewBuilder;
 import de.sarux.logik.helper.application.LogikException;
 import de.sarux.logik.helper.application.group.LogikGroup;
 import de.sarux.logik.helper.problem.GeneralLogikProblem;
 import de.sarux.logik.helper.problem.LogikElement;
 import de.sarux.logik.helper.problem.LogikLine;
+import de.sarux.logik.helper.problem.view.GeneralLogikBlockViewBuilder;
 import de.sarux.logik.helper.problem.view.GeneralLogikBlockViewLine;
 import de.sarux.logik.helper.problem.view.ValueView;
 import de.sarux.logik.helper.problem.view.ViewLineType;
@@ -53,7 +53,7 @@ public class GroupViewHandler {
                 for (LogikGroup otherGroup : problem.getGroups()) {
                     if (otherGroup != group) {
                         List<LogikElement> origView = singleLine.getSelectables(otherGroup);
-                        ValueView copyView = LogicBlockViewBuilder.buildValueView(otherGroup, origView);
+                        ValueView copyView = GeneralLogikBlockViewBuilder.buildValueView(otherGroup, origView);
                         groupLine.setValueView(index++, copyView);
                     }
                 }
@@ -79,7 +79,7 @@ public class GroupViewHandler {
                                 possibleElements.remove(elements.get(0));
                             }
                         }
-                        ValueView copyView = LogicBlockViewBuilder.buildValueView(otherGroup, possibleElements.stream().sorted(Comparator.comparing(LogikElement::getIndex)).collect(Collectors.toList()));
+                        ValueView copyView = GeneralLogikBlockViewBuilder.buildValueView(otherGroup, possibleElements.stream().sorted(Comparator.comparing(LogikElement::getIndex)).collect(Collectors.toList()));
                         groupLine.setValueView(index++, copyView);
                     }
                 }

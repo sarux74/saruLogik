@@ -1,13 +1,13 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.problem.view.multiplerelation.MultipleRelationBuilder;
-import de.sarux.logik.helper.problem.view.blockcompare.BlockCompareView;
 import static de.sarux.logik.helper.application.SolverController.SOLVE_VIEW_NAME;
 import de.sarux.logik.helper.problem.GeneralLogikProblem;
 import de.sarux.logik.helper.problem.view.GeneralLogikBlockViewLine;
+import de.sarux.logik.helper.problem.view.blockcompare.BlockCompareView;
 import de.sarux.logik.helper.problem.view.blockcompare.BlockCompareViewHandler;
 import de.sarux.logik.helper.problem.view.blockcompare.IdNamePair;
-import de.sarux.logik.helper.problem.view.group.GroupViewHandler;
+import de.sarux.logik.helper.problem.view.grid.LogikProblemGrid;
+import de.sarux.logik.helper.problem.view.multiplerelation.MultipleRelationBuilder;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +29,9 @@ public class LogikProblemViewController {
     @GetMapping(path = "/problems/{problemKey}/view/group")
     public List<GeneralLogikBlockViewLine> getBuildViewGroup(@PathVariable String problemKey, @RequestParam(name = "groupId") Integer groupId) {
         String problemName = SOLVE_VIEW_NAME + problemKey;
-        GeneralLogikProblem problem = problemBean.getProblem(problemName);
-   
-        GroupViewHandler solveHelper = new GroupViewHandler(problem);
-        return solveHelper.buildGroupViewLines(groupId);
+        final GeneralLogikProblem problem = problemBean.getProblem(problemName);
+        final LogikProblemGrid grid = problem.ensureGrid();
+        return grid.toGroupView(groupId);
     }
 
     @GetMapping(path = "/problems/{problemKey}/view/block/comparable")

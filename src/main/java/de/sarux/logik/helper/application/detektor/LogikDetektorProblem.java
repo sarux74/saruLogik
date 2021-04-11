@@ -17,6 +17,7 @@ import java.util.OptionalInt;
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@type")
 @Getter
+@Deprecated
 public class LogikDetektorProblem {
     private List<LogikGroup> groups;
     private List<LogikBlock> trueBlocks = new ArrayList<>();

@@ -1,11 +1,9 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.application.LogikException;
 import de.sarux.logik.helper.problem.view.positioner.Positioner;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 @Component
 public class PositionerBean {

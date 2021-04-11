@@ -90,7 +90,7 @@ public class LogikProblemIoController {
                 throw new LogikException("Rätsel konnte nicht gelesen werden!");
             }
 
-            GeneralLogikProblem logikProblem = null;
+            GeneralLogikProblem logikProblem;
             if (cls == LogikProblem.class) {
 // And convert it
                 final LogikProblem problem = mapper.convertValue(jsonNode, LogikProblem.class);

@@ -108,7 +108,7 @@ public class PositionerController {
 
     @PutMapping("/problems/{problemKey}/add")
     boolean addLine(@PathVariable String problemKey, @RequestBody AddLineInput addLineInput) throws LogikException {
-        Integer lineId = addLineInput.getLineId();;
+        Integer lineId = addLineInput.getLineId();
         if(lineId == null)
             positionerBean.getPositioner(problemKey).addTemplateLine();
         else if(addLineInput.getDirection() == 0) {

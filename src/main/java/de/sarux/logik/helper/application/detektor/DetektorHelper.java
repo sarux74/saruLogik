@@ -11,6 +11,7 @@ import de.sarux.logik.helper.application.group.LogikGroup;
 
 import java.util.*;
 
+@Deprecated
 public class DetektorHelper {
     private final LogikDetektorProblem problem;
     private final LogicBlockView view;
@@ -121,27 +122,6 @@ public class DetektorHelper {
             }
         }
         return singles;
-    }
-
-
-
-    private void mergeLines(LogikLine findLine, List<LogikLine> duplicates) throws LogikException {
-        Set<LogikElement> toUnselect = new HashSet<>();
-        for (LogikLine duplicate : duplicates) {
-            for (LogikGroup group : problem.getGroups()) {
-                List<LogikElement> selectables = findLine.getSelectables(group);
-                List<LogikElement> duplicateSelectables = duplicate.getSelectables(group);
-                for (LogikElement element : selectables) {
-                    if (!duplicateSelectables.contains(element)) {
-                        toUnselect.add(element);
-                    }
-                }
-            }
-        }
-
-        for (LogikElement unselect : toUnselect) {
-            findLine.unselect(unselect);
-        }
     }
 
 }

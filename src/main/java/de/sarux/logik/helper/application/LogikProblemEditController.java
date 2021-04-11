@@ -1,7 +1,6 @@
 package de.sarux.logik.helper.application;
 
 import de.sarux.logik.helper.application.group.LogikGroup;
-import de.sarux.logik.helper.application.group.LogikGroupsBean;
 import de.sarux.logik.helper.problem.GeneralLogikBlock;
 import de.sarux.logik.helper.problem.GeneralLogikProblem;
 import de.sarux.logik.helper.problem.LogikElement;
@@ -29,13 +28,11 @@ public class LogikProblemEditController {
 
     public static final String SOLVE_VIEW_NAME = "solve";
     private final GeneralLogikProblemBean problemBean;
-    private final LogikGroupsBean logikGroupsBean;
 
     // standard constructors
     @Autowired
-    public LogikProblemEditController(GeneralLogikProblemBean problemBean, LogikGroupsBean logikGroupsBean) {
+    public LogikProblemEditController(GeneralLogikProblemBean problemBean) {
         this.problemBean = problemBean;
-        this.logikGroupsBean = logikGroupsBean;
     }
 
     @GetMapping("/problems/{problemKey}/view")
@@ -97,7 +94,7 @@ public class LogikProblemEditController {
                 } else {
                     toLine = problem.newMainLine(block);
                 }
-                LogikLineRelation newRelation = block.newRelation(fromLine, groupFrom, toLine, groupTo, type, value, isSubLine);
+                block.newRelation(fromLine, groupFrom, toLine, groupTo, type, value, isSubLine);
             } else {
                 if (isSubLine) {
                     throw new LogikException("Eine Nebenbedingung muss auch eine richtige Beziehung haben!");
@@ -244,16 +241,5 @@ public class LogikProblemEditController {
             }
         }
         return copyProblem;
-    }
-
-    private LogikOptionBlockGroup findBlockGroup(GeneralLogikProblem problem, Integer blockGroupId) {
-        for (LogikOptionBlockGroup blockGroup : problem.getOptionBlockGroups()) {
-
-            if (blockGroup.getBlockGroupId() == blockGroupId) {
-                return blockGroup;
-            }
-
-        }
-        return null;
     }
 }

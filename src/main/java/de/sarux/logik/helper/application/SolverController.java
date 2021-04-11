@@ -9,8 +9,10 @@ import de.sarux.logik.helper.problem.LogikElement;
 import de.sarux.logik.helper.problem.LogikLine;
 import de.sarux.logik.helper.problem.LogikOptionBlockGroup;
 import de.sarux.logik.helper.problem.solve.SolveHelper;
+import de.sarux.logik.helper.problem.view.grid.LogikProblemGrid;
 import de.sarux.logik.helper.problem.view.group.BlockingCandidates;
 import de.sarux.logik.helper.problem.view.group.GroupViewHandler;
+import de.sarux.logik.helper.problem.view.group.UpdateGridInput;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,7 @@ public class SolverController {
 
     @PutMapping("/problems/{problemKey}/selection")
     boolean updateSelection(@PathVariable String problemKey, @RequestBody UpdateSelectionInput updateSelectionInput) {
-        GeneralLogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
+        final GeneralLogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
         LogikLine line = problem.getLine(updateSelectionInput.getLineId());
         LogikGroup group = problem.getGroup(updateSelectionInput.getGroupId());
         final List<LogikElement> selectedElements = new ArrayList<>();
@@ -40,6 +42,25 @@ public class SolverController {
         }
 
         problem.updateSelection(line, group, selectedElements);
+        return true;
+    }
+    
+    @PutMapping("/problems/{problemKey}/grid")
+    boolean updateGrid(@PathVariable String problemKey, @RequestBody UpdateGridInput updateGridInput) {
+        final GeneralLogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
+      final LogikProblemGrid grid = problem.ensureGrid();
+        LogikGroup group1 = problem.getGroup(updateGridInput.getGroup1Id());
+        LogikGroup group2 = problem.getGroup(updateGridInput.getGroup2Id());
+        LogikElement element1 = group1.getElements().get(updateGridInput.getElement1Id());
+        final List<LogikElement> selectedElements = new ArrayList<>(group2.getElements());
+        selectedElements.removeAll(updateGridInput.getSelection());
+        for (Integer index : updateGridInput.getSelection()) {
+            selectedElements.remove(group2.getElements().get(index));
+        }
+        
+        for(LogikElement unselected : selectedElements) {
+            grid.unsetRelation(element1, unselected);
+        }
         return true;
     }
 

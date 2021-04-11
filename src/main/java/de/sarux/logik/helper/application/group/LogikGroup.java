@@ -3,19 +3,19 @@ package de.sarux.logik.helper.application.group;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import de.sarux.logik.helper.problem.LogikElement;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
-        property="@id")
+        property = "@id")
 public class LogikGroup {
+
     private int index;
     @Setter
     private String name;
@@ -30,5 +30,10 @@ public class LogikGroup {
     public void addElement(String name, String shortName) {
         int index = elements.size();
         elements.add(new LogikElement(index, name, shortName, this));
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

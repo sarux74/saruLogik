@@ -9,7 +9,6 @@ import de.sarux.logik.helper.application.detektor.CombinationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
 import lombok.Getter;
 
 /**

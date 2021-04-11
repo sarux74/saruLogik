@@ -4,6 +4,8 @@ import {GroupService} from '../group/group.service';
 import {LogikGroup} from '../group/model/logik-group';
 import {LogikViewLine} from '../model/logik-view-line';
 import {ActivatedRoute} from '@angular/router';
+import {ValueSelectDialogComponent} from '../solve/dialog/value-select-dialog/value-select-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
     selector: 'app-group-view',
@@ -22,7 +24,7 @@ export class GroupViewComponent implements OnInit {
     key: string;
     private sub: any;
 
-    constructor(private solveService: SolveService, private groupService: GroupService, private route: ActivatedRoute) {}
+    constructor(private solveService: SolveService, private groupService: GroupService, private route: ActivatedRoute, public dialog: MatDialog) {}
 
     ngOnInit(): void {
         this.groupService.current().subscribe(data => {
@@ -73,7 +75,29 @@ export class GroupViewComponent implements OnInit {
             this.selectedLines = newSelectedLines;
         });
     }
+    
+    editSelection(line: LogikViewLine, index: number): void {
+        console.log(line);
+        console.log(index);
+        const dialogRef = this.dialog.open(ValueSelectDialogComponent, {
+            width: '400px',
+            data: {
+                group: this.sortedGroups[index],
+                selection: line.view[index].selectableValues,
+            }
+        });
 
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const element1Index = line.lineId;
+               const group2 = this.sortedGroups[index];
+                this.solveService.updateGrid(this.key, element1Index, this.groupId, group2.index, result).subscribe(resResult => {
+                    this.loadGroupView();
+                });
+            }
+        });
+    }
+    
     applyBlockingCandidates() {
         console.log(this.selectedLines);
         const candidates = [];

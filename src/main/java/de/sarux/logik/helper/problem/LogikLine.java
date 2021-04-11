@@ -1,16 +1,14 @@
 package de.sarux.logik.helper.problem;
 
-import de.sarux.logik.helper.problem.LogikElement;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import de.sarux.logik.helper.application.LogikException;
 import de.sarux.logik.helper.application.group.LogikGroup;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
