@@ -2,9 +2,9 @@ package de.sarux.logik.helper.application.detektor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.sarux.logik.helper.application.LogikBlock;
-import de.sarux.logik.helper.application.LogikElement;
-import de.sarux.logik.helper.application.LogikLine;
+import de.sarux.logik.helper.problem.LogikBlock;
+import de.sarux.logik.helper.problem.LogikElement;
+import de.sarux.logik.helper.problem.LogikLine;
 import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,7 @@ import java.util.OptionalInt;
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@type")
 @Getter
+@Deprecated
 public class LogikDetektorProblem {
     private List<LogikGroup> groups;
     private List<LogikBlock> trueBlocks = new ArrayList<>();

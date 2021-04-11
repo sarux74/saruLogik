@@ -1,11 +1,19 @@
 package de.sarux.logik.helper.application;
 
+import de.sarux.logik.helper.problem.view.ViewLineType;
+import de.sarux.logik.helper.problem.view.ValueView;
+import de.sarux.logik.helper.problem.LogikLine;
+import de.sarux.logik.helper.problem.LogikRelationType;
+import de.sarux.logik.helper.problem.LogikLineRelation;
+import de.sarux.logik.helper.problem.LogikBlock;
+import de.sarux.logik.helper.problem.LogikElement;
 import de.sarux.logik.helper.application.group.LogikGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class LogicBlockViewBuilder {
     public static ValueView buildValueView(LogikGroup group, List<LogikElement> selectables) {
         String text = "";

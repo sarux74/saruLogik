@@ -1,53 +1,53 @@
-<div style="position:sticky; top:0px;right:10px;left:10px;width:100%;background-color:white">
-  <div *ngIf="groups" fxLayout="column" fxLayoutAlign="space-between">
-    <div fxLayout="row" fxLayoutAlign="space-around">
-      <div fxFlex="40">Gruppe:</div>
-      <div fxFlex="60">
-        <mat-form-field>
-          <mat-label>Gruppe</mat-label>
-          <mat-select [(ngModel)]="groupId" (selectionChange)="loadGroupView()">
+<div class="subheader">
+    <div *ngIf="groups" fxLayout="column" fxLayoutAlign="space-between">
+        <div fxLayout="row" fxLayoutAlign="space-around">
+            <div fxFlex="40">Gruppe:</div>
+            <div fxFlex="60">
+                <mat-form-field>
+                    <mat-label>Gruppe</mat-label>
+                    <mat-select [(ngModel)]="groupId" (selectionChange)="loadGroupView()">
 
-            <mat-option *ngFor="let group of groups" [value]="group.index">{{group.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+                        <mat-option *ngFor="let group of groups" [value]="group.index">{{group.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
     </div>
-  </div>
-  <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">
-    <div fxLayout="row" fxLayoutAlign="space-around">
-      <div fxFlex="2">
-      </div>
-      <div [fxFlex]="flexPercent" *ngFor="let in of counter(sortedGroups.length) ;let i = index">
-        <div><b>{{sortedGroups[i].name}}</b></div>
-      </div>
+    <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">
+        <div fxLayout="row" fxLayoutAlign="space-around">
+            <div fxFlex="2">
+            </div>
+            <div [fxFlex]="flexPercent" *ngFor="let in of counter(sortedGroups.length) ;let i = index">
+                <div><b>{{sortedGroups[i].name}}</b></div>
+            </div>
+        </div>
+        <div>
+            <hr/>
+        </div>
     </div>
-    <div>
-      <hr/>
-    </div>
-  </div>
 </div>
 
 <div *ngIf="lines && groups" style="padding-top: 10px;">
-  <div *ngFor="let line of lines; let i = index">
+    <div *ngFor="let line of lines; let i = index">
+        <div fxLayout="row" fxLayoutAlign="space-around">
+            <div fxFlex="2">
+                <mat-checkbox [(ngModel)]="selectedLines[i]"></mat-checkbox>
+            </div>
+            <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let j = index">
+                <div (click)="editSelection(line, j)">{{printViewValue(line, j)}}</div>
+            </div>
+        </div>
+    </div>
     <div fxLayout="row" fxLayoutAlign="space-around">
-      <div fxFlex="2">
-        <mat-checkbox [(ngModel)]="selectedLines[i]"></mat-checkbox>
-      </div>
-      <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-        <div>{{printViewValue(line, i)}}</div>
-      </div>
+        <div fxFlex="2">
+            <button mat-icon-button color="primary" aria-label="andere ausschließen"
+                    (click)="applyBlockingCandidates()">
+                <mat-icon>add_box</mat-icon>
+            </button>&nbsp;
+        </div>
+        <div fxFlex="98">
+        </div>
     </div>
-  </div>
-  <div fxLayout="row" fxLayoutAlign="space-around">
-    <div fxFlex="2">
-      <button mat-icon-button color="primary" aria-label="andere ausschließen"
-              (click)="applyBlockingCandidates()">
-        <mat-icon>add_box</mat-icon>
-      </button>&nbsp;
-    </div>
-    <div fxFlex="98">
-    </div>
-  </div>
 </div>
 

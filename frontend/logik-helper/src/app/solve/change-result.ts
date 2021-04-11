@@ -1,5 +1,5 @@
 export class ChangeResult {
-   changedLines: number[];
-   messages: string[];
+    changedLines: number[];
+    messages: string[];
 
 }

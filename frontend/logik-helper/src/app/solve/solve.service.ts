@@ -1,100 +1,116 @@
-import { Injectable } from '@angular/core';
-import {LogikView} from './model/logik-view';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {LogikView} from '../model/logik-view';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
 import {ChangeResult} from './change-result';
-import {LogikViewLine} from './model/logik-view-line';
+import {LogikViewLine} from '../model/logik-view-line';
 import {IdNamePair} from '../block-compare-view/id-name-pair';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SolveService {
 
-  private solveUrl: string;
+    private solveUrl: string;
 
-      constructor(private http: HttpClient) {
-        this.solveUrl = 'http://localhost:8080/solve/';
-      }
+    constructor(private http: HttpClient) {
+        this.solveUrl = 'http://localhost:8080';
+    }
 
-      public load(problemKey: string): Observable<LogikView> {
-        return this.http.get<LogikView>(this.solveUrl + 'problems/' + problemKey +  '/view');
-      }
+    public load(problemKey: string): Observable<LogikView> {
+        return this.http.get<LogikView>(this.buildProblemUrl(problemKey, '/view'));
+    }
 
-       public updateSelection(problemKey: string, lineIndex: number, groupIndex: number, selection: number[]) {
-         const data = {lineId: lineIndex, groupId: groupIndex, selection: selection};
-         console.log(data);
-          return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/selection', data);
-       }
+    public updateSelection(problemKey: string, lineIndex: number, groupIndex: number, selection: number[]) {
+        const data = {lineId: lineIndex, groupId: groupIndex, selection};
+        console.log(data);
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/selection'), data);
+    }
 
-       public newBlock(problemKey: string, result: any) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/new', result);
-       }
+    public updateGrid(problemKey: string, lineIndex: number, group1Index: number, group2Index: number, selection: number[]) {
+        const data = {element1Id: lineIndex, group1Id: group1Index, group2Id: group2Index, selection};
+        console.log(data);
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/grid'), data);
+    }
 
-       public flipBlock(problemKey: string, blockId: number) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/flip', blockId);
-       }
-       public showBlock(problemKey: string, blockId: number) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/show', blockId);
-       }
-       public hideBlock(problemKey: string, blockId: number) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/hide', blockId);
-       }
+    public newBlock(problemKey: string, result: any): Observable<boolean> {
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/block/new'), result);
+    }
 
-       public findNegatives(problemKey: string, lineId: number) : Observable<ChangeResult> {
-              return this.http.put<ChangeResult>(this.solveUrl + 'problems/' + problemKey + '/negative', lineId);
-       }
+    public flipBlock(problemKey: string, blockId: number): Observable<boolean> {
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/block/flip'), blockId);
+    }
+    public showBlock(problemKey: string, blockId: number): Observable<boolean> {
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/block/show'), blockId);
+    }
+    public hideBlock(problemKey: string, blockId: number): Observable<boolean> {
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/block/hide'), blockId);
+    }
 
-       public findPositives(problemKey: string, lineIds: number[]) : Observable<ChangeResult> {
-              return this.http.put<ChangeResult>(this.solveUrl + 'problems/' + problemKey + '/positive', lineIds);
-       }
+    public findNegatives(problemKey: string, lineId: number): Observable<ChangeResult> {
+        return this.http.put<ChangeResult>(this.buildProblemUrl(problemKey, '/negative'), lineId);
+    }
 
-       public newRelation(problemKey: string, result: any) : Observable<boolean> {
-         return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/relation/new', result);
-       }
+    public findPositives(problemKey: string, lineIds: number[]): Observable<ChangeResult> {
+        return this.http.put<ChangeResult>(this.buildProblemUrl(problemKey, '/positive'), lineIds);
+    }
 
-       public newCase(problemKey: string, lineId1: number, lineId2: number) : Observable<string> {
-          const data = {'line1Id': lineId1, 'line2Id': lineId2};
-          return this.http.put<string>(this.solveUrl + 'problems/' + problemKey + '/case/new', data);
-       }
+    public newRelation(problemKey: string, result: any): Observable<boolean> {
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/relation/new'), result);
+    }
 
-       public closeCase(problemKey: string) : Observable<string> {
-           return this.http.put<string>(this.solveUrl + 'problems/' + problemKey + '/case/close', null);
-       }
+    public newCase(problemKey: string, line1Id: number, line2Id: number): Observable<string> {
+        const data = {line1Id, line2Id};
+        return this.http.put<string>(this.buildProblemUrl(problemKey, '/case/new'), data);
+    }
 
-       public loadGroupView(problemKey: string, groupId: number) : Observable<LogikViewLine[]> {
-         const opts = { params: new HttpParams({fromString: "groupId=" + groupId}) };
+    public closeCase(problemKey: string): Observable<string> {
+        return this.http.put<string>(this.buildProblemUrl(problemKey, '/case/close'), null);
+    }
 
-        return this.http.get<LogikViewLine[]>(this.solveUrl + 'problems/' + problemKey + '/view/group', opts);
-      }
+    public loadGroupView(problemKey: string, groupId: number): Observable<LogikViewLine[]> {
+        const opts = {params: new HttpParams({fromString: 'groupId=' + groupId})};
 
-      public loadComparableBlocks(problemKey: string) : Observable<IdNamePair[]> {
-          return this.http.get<IdNamePair[]>(this.solveUrl + 'problems/' + problemKey + '/view/block/comparable');
-      }
+        return this.http.get<LogikViewLine[]>(this.buildProblemUrl(problemKey, '/view/group'), opts);
+    }
 
-      public loadBlockCompareView(problemKey: string, block1Id: number, block2Id: number) : Observable<any> {
-         const opts = { params: new HttpParams({fromString: "blockId1=" + block1Id + "&blockId2=" + block2Id}) };
-         return this.http.get<any>(this.solveUrl + 'problems/' + problemKey + '/view/blockcompare', opts);
-      }
+    public loadComparableBlocks(problemKey: string): Observable<IdNamePair[]> {
+        return this.http.get<IdNamePair[]>(this.buildProblemUrl(problemKey, '/view/block/comparable'));
+    }
 
-      public mergeLines(problemKey: string, line1: LogikViewLine, line2: LogikViewLine) : Observable<boolean> {
-         return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/merge', {line1Id: line1.lineId, line2Id: line2.lineId});
-       }
+    public loadBlockCompareView(problemKey: string, block1Id: number, block2Id: number): Observable<any> {
+        const opts = {params: new HttpParams({fromString: 'blockId1=' + block1Id + '&blockId2=' + block2Id})};
+        return this.http.get<any>(this.buildProblemUrl(problemKey, '/view/blockcompare'), opts);
+    }
 
-       public blockUp(problemKey: string, selectedLine: LogikViewLine) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/lineup', {blockId: selectedLine.blockId, lineId: selectedLine.lineId});
-       }
+    public mergeLines(problemKey: string, line1: LogikViewLine, line2: LogikViewLine): Observable<boolean> {
+        const data = {line1Id: line1.lineId, line2Id: line2.lineId};
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/merge'), data);
+    }
 
-       public blockDown(problemKey: string, selectedLine: LogikViewLine) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/block/linedown', {blockId: selectedLine.blockId, lineId: selectedLine.lineId});
-       }
+    public blockUp(problemKey: string, selectedLine: LogikViewLine): Observable<boolean> {
+        const data = {blockId: selectedLine.blockId, lineId: selectedLine.lineId};
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/block/lineup'), data);
+    }
 
-      public applyBlockingCandidates(problemKey: string, groupId: number, selectedLines: number[]) : Observable<boolean> {
-         return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/blocking_candidates', {groupId: groupId, selectedLines: selectedLines});
-      }
+    public blockDown(problemKey: string, selectedLine: LogikViewLine): Observable<boolean> {
+        const data = {blockId: selectedLine.blockId, lineId: selectedLine.lineId};
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/block/linedown'), data);
+    }
 
-      public refresh(problemKey: string) : Observable<boolean> {
-        return this.http.put<boolean>(this.solveUrl + 'problems/' + problemKey + '/view/refresh', {});
-      }
+    public applyBlockingCandidates(problemKey: string, groupId: number, selectedLines: number[]): Observable<boolean> {
+        const data = {groupId, selectedLines};
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/blocking_candidates'), data);
+    }
+
+    public refresh(problemKey: string): Observable<boolean> {
+        return this.http.put<boolean>(this.buildProblemUrl(problemKey, '/view/refresh'), {});
+    }
+
+    public buildProblemUrl(problemKey: string, path: string): string {
+        const url = this.solveUrl + '/problems/' + problemKey + path
+        console.log(url);
+        return url;
+    }
 
 }

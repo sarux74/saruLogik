@@ -1,21 +1,21 @@
 <div fxLayout="column" fxLayoutAlign="space-between">
 
-  <div fxLayout="row" fxLayoutAlign="space-around" *ngFor="let in of counter(data.group.elements.length) ;let i = index">
-    <div fxFlex="20"><mat-checkbox [(ngModel)]="selected[i]"></mat-checkbox> </div>
-    <div fxFlex="80">
-      {{data.group.elements[i].name}}
+    <div fxLayout="row" fxLayoutAlign="space-around" *ngFor="let in of counter(data.group.elements.length) ;let i = index">
+        <div fxFlex="20"><mat-checkbox [(ngModel)]="selected[i]"></mat-checkbox> </div>
+        <div fxFlex="80">
+            {{data.group.elements[i].name}}
+        </div>
     </div>
-  </div>
 
-  <div fxLayout="row" fxLayoutAlign="space-around">
-    <div fxFlex="20"><mat-checkbox (change)="unselect()"></mat-checkbox> </div>
-    <div fxFlex="80">
-      Keine
+    <div fxLayout="row" fxLayoutAlign="space-around">
+        <div fxFlex="20"><mat-checkbox (change)="unselect()"></mat-checkbox> </div>
+        <div fxFlex="80">
+            Keine
+        </div>
     </div>
-  </div>
 
-  <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="convert(data.group, selected)" cdkFocusInitial>Ok</button>
-  </div>
+    <div mat-dialog-actions>
+        <button mat-button [mat-dialog-close]="convert(data.group, selected)" cdkFocusInitial>Ok</button>
+    </div>
 
 </div>

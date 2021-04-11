@@ -1,28 +1,35 @@
 package de.sarux.logik.helper.application;
 
-import de.sarux.logik.helper.LogikProblem;
+import static de.sarux.logik.helper.application.SolverController.SOLVE_VIEW_NAME;
 import de.sarux.logik.helper.application.group.LogikGroup;
 import de.sarux.logik.helper.application.group.LogikGroupsBean;
-import de.sarux.logik.helper.application.positioner.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
+import de.sarux.logik.helper.problem.GeneralLogikProblem;
+import de.sarux.logik.helper.problem.LogikElement;
+import de.sarux.logik.helper.problem.LogikLine;
+import de.sarux.logik.helper.problem.util.UpdateSelectionInput;
+import de.sarux.logik.helper.problem.view.ValueView;
+import de.sarux.logik.helper.problem.view.positioner.AddLineInput;
+import de.sarux.logik.helper.problem.view.positioner.PositionLogikLine;
+import de.sarux.logik.helper.problem.view.positioner.Positioner;
+import de.sarux.logik.helper.problem.view.positioner.PositionerInit;
+import de.sarux.logik.helper.problem.view.positioner.PositionerView;
+import de.sarux.logik.helper.problem.view.positioner.RemoveLineInput;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static de.sarux.logik.helper.application.SolverController.SOLVE_VIEW_NAME;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("positioner")
 @CrossOrigin("*")
 public class PositionerController {
     private final LogikGroupsBean logikGroupsBean;
-    private final ProblemBean problemBean;
+    private final GeneralLogikProblemBean problemBean;
     private final PositionerBean positionerBean;
 
     // standard constructors
     @Autowired
-    public PositionerController(ProblemBean problemBean, LogikGroupsBean logikGroupsBean, PositionerBean positionerBean) {
+    public PositionerController(GeneralLogikProblemBean problemBean, LogikGroupsBean logikGroupsBean, PositionerBean positionerBean) {
         this.logikGroupsBean = logikGroupsBean;
         this.problemBean = problemBean;
         this.positionerBean = positionerBean;
@@ -33,7 +40,7 @@ public class PositionerController {
         LogikGroup positionGroup = logikGroupsBean.getGroups().get(positionerInit.getPositionGroupId());
         LogikGroup positionedGroup = logikGroupsBean.getGroups().get(positionerInit.getPositionedGroupId());
 
-        LogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
+        final GeneralLogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
         PositionLogikLine positionLogikLine = new PositionLogikLine(-1, positionGroup, positionedGroup);
 
         // Look for lines with singleton positionElement
@@ -101,7 +108,7 @@ public class PositionerController {
 
     @PutMapping("/problems/{problemKey}/add")
     boolean addLine(@PathVariable String problemKey, @RequestBody AddLineInput addLineInput) throws LogikException {
-        Integer lineId = addLineInput.getLineId();;
+        Integer lineId = addLineInput.getLineId();
         if(lineId == null)
             positionerBean.getPositioner(problemKey).addTemplateLine();
         else if(addLineInput.getDirection() == 0) {
@@ -123,7 +130,7 @@ public class PositionerController {
     @PutMapping("/problems/{problemKey}/selection")
     boolean updateSelection(@PathVariable String problemKey, @RequestBody UpdateSelectionInput updateSelectionInput) throws LogikException {
         Positioner positioner = positionerBean.getPositioner(problemKey);
-        PositionLogikLine line = positioner.findLineById(updateSelectionInput.lineId);
+        PositionLogikLine line = positioner.findLineById(updateSelectionInput.getLineId());
         LogikElement element = positioner.getPositionGroup().getElements().get(updateSelectionInput.getGroupId());
         if (updateSelectionInput.getSelection().size() == 1) {
             positioner.set(updateSelectionInput.getLineId(), element, positioner.getPositionedGroup().getElements().get(updateSelectionInput.getSelection().get(0)));
@@ -140,7 +147,7 @@ public class PositionerController {
     @PutMapping("/problems/{problemKey}/overtake")
     boolean overtake(@PathVariable String problemKey) throws LogikException {
         Positioner positioner = positionerBean.getPositioner(problemKey);
-        LogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
+        final GeneralLogikProblem problem = problemBean.getProblem(SOLVE_VIEW_NAME + problemKey);
 
         // Position -> Positioned
         Map<LogikElement, Set<LogikElement>> allowedElements = new HashMap<>();

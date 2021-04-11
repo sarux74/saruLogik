@@ -1,5 +1,7 @@
 package de.sarux.logik.helper.application;
 
+import de.sarux.logik.helper.problem.view.ViewLineType;
+import de.sarux.logik.helper.problem.LogikBlock;
 import de.sarux.logik.helper.LogikProblem;
 import de.sarux.logik.helper.application.detektor.LogikDetektorProblem;
 import de.sarux.logik.helper.application.group.LogikGroup;
@@ -56,7 +58,7 @@ public class ProblemViewBean {
 
     public void buildDetektorView(LogikDetektorProblem problem) throws LogikException {
         LogicBlockView logicBlockView = buildView(problem.getGroups(), problem.getAllBlocks());
-        views.put(DetektorController.DETEKTOR_VIEW_NAME, logicBlockView);
+        views.put(SolverController.SOLVE_VIEW_NAME, logicBlockView);
     }
 
     public void addProblemView(String copyProblemKey, LogicBlockView copyView) {

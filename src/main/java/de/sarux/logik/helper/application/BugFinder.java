@@ -1,5 +1,7 @@
 package de.sarux.logik.helper.application;
 
+import de.sarux.logik.helper.problem.view.ViewLineType;
+import de.sarux.logik.helper.problem.LogikElement;
 import de.sarux.logik.helper.application.group.LogikGroup;
 
 import java.util.ArrayList;
