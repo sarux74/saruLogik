@@ -1,2 +1,3 @@
-/frontend/nbproject/private/
-/frontend/logik-helper/nbproject/private/
+/build/
+/.gradle/
+

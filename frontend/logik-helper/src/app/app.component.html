@@ -1,1 +1,28 @@
-<router-outlet></router-outlet>
+<div id="header">
+    <div fxLayout="row" fxLayoutAlign="left" fxLayoutGap="10px">
+        <mat-label>Ansichten:</mat-label>
+        <mat-form-field>
+            <mat-select [(ngModel)]="selected_view" (selectionChange)="changeView()">
+                <mat-option *ngFor="let view of views" [value]="view.key">{{view.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button (click)="newProblem()" mat-button>Neues Rätsel
+        </button>
+        <button (click)="fileInput.click()" mat-button>
+            <span>Laden</span>
+            <input #fileInput type="file" (change)="loadProblem($event)" style="display:none;" />
+        </button> 
+        <button type="button"
+                fileSaver
+                [method]="'GET'"
+                [fileName]="'problem.json'"
+                [url]="'http://localhost:8080/problem/save'"
+                [header]="{ token: 'logik' }" mat-button>Speichern
+        </button>
+    </div>
+</div>
+<div id="content">
+    <router-outlet></router-outlet>        
+</div>
+

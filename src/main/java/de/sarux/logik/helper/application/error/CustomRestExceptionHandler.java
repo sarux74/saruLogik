@@ -28,7 +28,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request) {
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         }
@@ -76,7 +76,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         builder.append(ex.getMethod());
         builder.append(
                 " method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
+        ex.getSupportedHttpMethods().forEach(t -> builder.append(t).append(" "));
 
         ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED,
                 ex.getLocalizedMessage(), builder.toString());
@@ -94,7 +94,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
-        ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
+        ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
 
         ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                 ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));

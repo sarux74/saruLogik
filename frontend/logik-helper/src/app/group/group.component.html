@@ -1,50 +1,25 @@
-<meta charset="utf-8">
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card bg-dark my-5">
-        <div class="card-body">
-          <h2 class="card-title text-center text-white py-3">{{ title }}</h2>
-          <ul class="text-center list-inline py-3">
-            <li class="list-inline-item">
-              <a (click)="newProblem()" class="btn btn-info">Neue Aufgabe</a>
-            </li>
-            <li class="list-inline-item">
-              <button (click)="fileInput.click()">
-                <span>Laden</span>
-                <input #fileInput type="file" (change)="loadProblem($event)" style="display:none;" />
-              </button>
-            </li>
-            <li class="list-inline-item">
-              <a (click)="newGroup()" class="btn btn-info">Neue Gruppe</a>
-            </li>
-
-            <li *ngIf="problemType !== 2" class="list-inline-item">
-              <a (click)="startSolver()" class="btn btn-info">Löser starten</a>
-            </li>
-            <li *ngIf="problemType !== 1" class="list-inline-item">
-              <a (click)="startDetektor()" class="btn btn-info">Lügendetektor starten</a>
-            </li>
-          </ul>
+<div id="subheader">
+    <div class="row">
+        <div class="col-md-12">
+            <button (click)="newGroup()" mat-button>Neue Gruppe
+            </button>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="space-between">
+<div fxLayout="row" fxLayoutAlign="left" fxLayoutGap="20px">
 
-      <mat-card *ngFor="let group of groups">
+    <mat-card *ngFor="let group of groups">
         <mat-card-title>{{group.name}}</mat-card-title>
         <mat-card-content>
-          <mat-list>
-            <mat-list-item *ngFor="let elem of group['elements']">{{elem.shortName}} - {{elem.name}}</mat-list-item>
-          </mat-list>
+            <mat-list>
+                <mat-list-item *ngFor="let elem of group['elements']">{{elem.shortName}} - {{elem.name}}</mat-list-item>
+            </mat-list>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-button (click)="editGroup(group.index)">Bearbeiten</button>
+            <button mat-button (click)="editGroup(group.index)">Bearbeiten</button>
         </mat-card-actions>
-      </mat-card>
+    </mat-card>
 </div>
 
 

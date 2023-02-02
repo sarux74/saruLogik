@@ -1,10 +1,17 @@
 package de.sarux.logik.helper.application.detektor;
 
+import de.sarux.logik.helper.problem.solve.ChangeResult;
+import de.sarux.logik.helper.problem.LogikLine;
+import de.sarux.logik.helper.problem.LogikRelationType;
+import de.sarux.logik.helper.problem.LogikLineRelation;
+import de.sarux.logik.helper.problem.LogikBlock;
+import de.sarux.logik.helper.problem.LogikElement;
 import de.sarux.logik.helper.application.*;
 import de.sarux.logik.helper.application.group.LogikGroup;
 
 import java.util.*;
 
+@Deprecated
 public class DetektorHelper {
     private final LogikDetektorProblem problem;
     private final LogicBlockView view;
@@ -115,27 +122,6 @@ public class DetektorHelper {
             }
         }
         return singles;
-    }
-
-
-
-    private void mergeLines(LogikLine findLine, List<LogikLine> duplicates) throws LogikException {
-        Set<LogikElement> toUnselect = new HashSet<>();
-        for (LogikLine duplicate : duplicates) {
-            for (LogikGroup group : problem.getGroups()) {
-                List<LogikElement> selectables = findLine.getSelectables(group);
-                List<LogikElement> duplicateSelectables = duplicate.getSelectables(group);
-                for (LogikElement element : selectables) {
-                    if (!duplicateSelectables.contains(element)) {
-                        toUnselect.add(element);
-                    }
-                }
-            }
-        }
-
-        for (LogikElement unselect : toUnselect) {
-            findLine.unselect(unselect);
-        }
     }
 
 }

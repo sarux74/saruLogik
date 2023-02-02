@@ -1,58 +1,58 @@
 <div id="header">
 
-  <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">
-    <div fxLayout="row" fxLayoutAlign="space-around">
-      <div fxFlex="6">
-      </div>
-      <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-        <div><b>{{groups[i].name}}</b></div>
-      </div>
+    <div *ngIf="lines && groups" fxLayout="column" fxLayoutAlign="space-between">
+        <div fxLayout="row" fxLayoutAlign="space-around">
+            <div fxFlex="6">
+            </div>
+            <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+                <div><b>{{groups[i].name}}</b></div>
+            </div>
+        </div>
+        <div>
+            <hr/>
+        </div>
     </div>
-    <div>
-      <hr/>
-    </div>
-  </div>
 </div>
 <div id="content">
-  <div *ngIf="lines && groups" style="padding-top: 30px;z-index: 1;">
-    <div *ngFor="let line of lines">
-      <div [ngSwitch]="line.type">
-        <div *ngSwitchCase="'MAIN_SEPARATOR'">
-          <hr/>
-        </div>
-        <div *ngSwitchCase="'BLOCK'" fxLayout="row" fxLayoutAlign="space-around">
-          <div fxFlex="6">
-          </div>
-          <div fxFlex="94">
-            <div><b>{{printViewValue(line, 0)}}</b></div>
-          </div>
-        </div>
+    <div *ngIf="lines && groups" style="padding-top: 30px;z-index: 1;">
+        <div *ngFor="let line of lines">
+            <div [ngSwitch]="line.type">
+                <div *ngSwitchCase="'MAIN_SEPARATOR'">
+                    <hr/>
+                </div>
+                <div *ngSwitchCase="'BLOCK'" fxLayout="row" fxLayoutAlign="space-around">
+                    <div fxFlex="6">
+                    </div>
+                    <div fxFlex="94">
+                        <div><b>{{printViewValue(line, 0)}}</b></div>
+                    </div>
+                </div>
 
-        <div *ngSwitchCase="'RELATION_UPPER'" fxLayout="row" fxLayoutAlign="space-around">
-          <div fxFlex="6">
+                <div *ngSwitchCase="'RELATION_UPPER'" fxLayout="row" fxLayoutAlign="space-around">
+                    <div fxFlex="6">
 
-          </div>
-          <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-            <div>{{printViewValue(line, i)}}</div>
-          </div>
+                    </div>
+                    <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+                        <div>{{printViewValue(line, i)}}</div>
+                    </div>
+                </div>
+
+                <div *ngSwitchDefault fxLayout="row" fxLayoutAlign="space-around">
+                    <div fxFlex="2">
+
+                    </div>
+                    <div fxFlex="2">
+                        <mat-checkbox *ngIf="isValueLine(line)" [checked]="selectedLine == line"
+                                      (change)="selectLine($event, line)"></mat-checkbox>
+                    </div>
+                    <div fxFlex="2">
+                        <div *ngIf="line.type === 'LINE' || line.type === 'SUBLINE'">{{line.lineId}}</div>
+                    </div>
+                    <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
+                        <div (click)="editSelection(line, i)">{{printViewValue(line, i)}}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div *ngSwitchDefault fxLayout="row" fxLayoutAlign="space-around">
-          <div fxFlex="2">
-
-          </div>
-          <div fxFlex="2">
-            <mat-checkbox *ngIf="isValueLine(line)" [checked]="selectedLine == line"
-                          (change)="selectLine($event, line)"></mat-checkbox>
-          </div>
-          <div fxFlex="2">
-            <div *ngIf="line.type === 'LINE' || line.type === 'SUBLINE'">{{line.lineId}}</div>
-          </div>
-          <div [fxFlex]="flexPercent" *ngFor="let in of counter(groups.length) ;let i = index">
-            <div (click)="editSelection(line, i)">{{printViewValue(line, i)}}</div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

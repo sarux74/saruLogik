@@ -1,9 +1,9 @@
 package de.sarux.logik.helper;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.sarux.logik.helper.application.LogikBlock;
-import de.sarux.logik.helper.application.LogikElement;
-import de.sarux.logik.helper.application.LogikLine;
+import de.sarux.logik.helper.problem.LogikBlock;
+import de.sarux.logik.helper.problem.LogikElement;
+import de.sarux.logik.helper.problem.LogikLine;
 import de.sarux.logik.helper.application.group.LogikGroup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +15,11 @@ import java.util.OptionalInt;
 
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@type")
+@Deprecated
 public class LogikProblem {
     private List<LogikGroup> groups;
-    private List<LogikBlock> blocks = new ArrayList<>();
-    private List<LogikLine> lines = new ArrayList<>();
+    private final List<LogikBlock> blocks = new ArrayList<>();
+    private final List<LogikLine> lines = new ArrayList<>();
 
     // For case
     @Getter
@@ -36,7 +37,6 @@ public class LogikProblem {
         LogikBlock block = new LogikBlock(blocks.size(), name);
         blocks.add(block);
         return block;
-
     }
 
     public LogikLine newMainLine(LogikBlock block) {

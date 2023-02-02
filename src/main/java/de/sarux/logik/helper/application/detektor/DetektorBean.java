@@ -8,6 +8,7 @@ import java.util.List;
 
 @Component
 @Getter
+@Deprecated
 public class DetektorBean {
     private LogikDetektorProblem currentProblem;
 

@@ -17,11 +17,11 @@ public class BeanConfiguration {
         return groupsBean;
     }
 
-     @Bean
+    @Bean
     @Lazy
     public ProblemBean problem() {
         return new ProblemBean();
-     }
+    }
 
     @Bean
     @Lazy
